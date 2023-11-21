@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\MasterKaryawanController;
 use App\Http\Controllers\MasterUserController;
+use App\Models\MasterKaryawan;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 use App\Models\User;
 
@@ -33,14 +35,50 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('aut
 // Master User
 Route::resource('/master_user', MasterUserController::class)->middleware('auth');
 
+// Master Karyawan
+Route::resource('/master_karyawan', MasterKaryawanController::class)->middleware('auth');
+
 // Ajax Get Data
 Route::get('/get_user', function () {
     $data = User::all();
     return response()->json(['data' => $data]);
 })->name('get_user');
 
-Route::get('/get_data_user/{id}',function($id){
+Route::get('/get_data_user/{id}', function ($id) {
     $data = User::find($id);
 
     return response()->json($data);
 })->name('get_data_user');
+
+Route::get('/get_karyawan', function (Request $request) {
+    $search_val = $request->input('search');
+    // print_r($search_val);
+    // exit;
+
+    if ($search_val !== "" && $search_val !== null) {
+        $data = MasterKaryawan::where('nm_karyawan', 'LIKE', '%' . $search_val . '%')
+            ->orWhere('no_hp', 'LIKE', '%' . $search_val . '%')
+            ->orWhere('email', 'LIKE', '%' . $search_val . '%')
+            ->limit(50)
+            ->get();
+    } else {
+        $data = MasterKaryawan::limit(50)->get();
+    }
+
+    $hasil = [];
+    foreach ($data as $list_data) {
+        $hasil[] = [
+            'id_karyawan' => $list_data->id_karyawan,
+            'nm_karyawan' => $list_data->nm_karyawan,
+            'no_hp' => $list_data->no_hp,
+            'email' => $list_data->email,
+            'buttons' => '
+                <button type="button" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></button>
+                <button type="button" class="btn btn-sm btn-warning text-light"><i class="fa fa-edit"></i></button>
+                <button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+            '
+        ];
+    }
+
+    return response()->json(['data' => $hasil]);
+})->name('get_karyawan');

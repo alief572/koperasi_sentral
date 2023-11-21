@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\MasterKaryawan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Stmt\TryCatch;
 
 class MasterKaryawanController extends Controller
 {
@@ -12,7 +16,10 @@ class MasterKaryawanController extends Controller
      */
     public function index()
     {
-        
+        return view('dashboard.master_karyawan.index',[
+            'title' => 'Master Karyawan',
+            'logged_user' => Auth::user()
+        ]);
     }
 
     /**
