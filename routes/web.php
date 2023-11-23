@@ -55,30 +55,56 @@ Route::get('/get_karyawan', function (Request $request) {
     // print_r($search_val);
     // exit;
 
+    $draw = request()->input('draw');
+    $start = request()->input('start');
+    $length = request()->input('length');
+    $search = request()->input('search.value');
+
     if ($search_val !== "" && $search_val !== null) {
         $data = MasterKaryawan::where('nm_karyawan', 'LIKE', '%' . $search_val . '%')
             ->orWhere('no_hp', 'LIKE', '%' . $search_val . '%')
             ->orWhere('email', 'LIKE', '%' . $search_val . '%')
-            ->limit(50)
-            ->get();
+            ->skip($start)
+            ->take($length);
+
+        $all_data = MasterKaryawan::where('nm_karyawan', 'LIKE', '%' . $search_val . '%')
+        ->orWhere('no_hp', 'LIKE', '%' . $search_val . '%')
+        ->orWhere('email', 'LIKE', '%' . $search_val . '%')
+        ->limit(50);
     } else {
-        $data = MasterKaryawan::limit(50)->get();
+        $data = MasterKaryawan::skip($start)
+        ->take($length);
+        $all_data =  MasterKaryawan::limit(50);
     }
 
+    $get_data = $data->get();
+    $total = $all_data->count();
+
     $hasil = [];
-    foreach ($data as $list_data) {
+    foreach ($get_data as $list_data) {
         $hasil[] = [
             'id_karyawan' => $list_data->id_karyawan,
             'nm_karyawan' => $list_data->nm_karyawan,
             'no_hp' => $list_data->no_hp,
             'email' => $list_data->email,
             'buttons' => '
-                <button type="button" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></button>
-                <button type="button" class="btn btn-sm btn-warning text-light"><i class="fa fa-edit"></i></button>
-                <button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                <button type="button" class="btn btn-sm btn-info view_karyawan" data-id_karyawan="'.$list_data->id_karyawan.'"><i class="fa fa-eye"></i></button>
+                <button type="button" class="btn btn-sm btn-warning text-light edit_karyawan" data-id_karyawan="'.$list_data->id_karyawan.'"><i class="fa fa-edit"></i></button>
+                <button type="button" class="btn btn-sm btn-danger del_karyawan" data-id_karyawan="'.$list_data->id_karyawan.'"><i class="fa fa-trash"></i></button>
             '
         ];
     }
 
-    return response()->json(['data' => $hasil]);
+    return response()->json([
+        'draw' => $draw,
+        'recordsTotal' => $total,
+        'recordsFiltered' => $total,
+        'data' => $hasil
+    ]);
 })->name('get_karyawan');
+
+Route::get('/get_data_karyawan/{id}', function($id){
+    $get_data = MasterKaryawan::find($id);
+
+    return json_encode(['data' => $get_data]);
+})->middleware('auth');

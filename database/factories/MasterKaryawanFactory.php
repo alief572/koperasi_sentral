@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\MasterKaryawan;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,6 +17,14 @@ class MasterKaryawanFactory extends Factory
      */
     public function definition(): array
     {
+        $id_karyawan = MasterKaryawan::where('id_karyawan', 'LIKE', '%KAR-' . date('y-m') . '%')->max('id_karyawan');
+        $kodeBarang = $id_karyawan;
+        $urutan = (int) substr($kodeBarang, 10, 5);
+        $urutan++;
+        $tahun = date('y-m');
+        $huruf = "KAR-";
+        $kodecollect = $huruf . $tahun . sprintf("%06s", $urutan);
+
         return [
             'id_karyawan' => fake()->uuid(),
             'nm_karyawan' => fake()->name($gender = null),
