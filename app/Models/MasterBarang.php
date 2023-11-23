@@ -18,4 +18,8 @@ class MasterBarang extends Model
         'nm_barang',
         'sts'
     ];
+
+    public function kategori_barang(){
+        return $this->hasOne(MasterKategoriBarang::class, 'id', 'id_kategori_barang');
+    }
 }

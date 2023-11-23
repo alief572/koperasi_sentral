@@ -10,6 +10,7 @@ use App\Http\Controllers\MasterKategoriBarangAjaxController;
 use App\Http\Controllers\MasterUserController;
 use App\Models\MasterKaryawan;
 use App\Models\MasterBarang;
+use App\Models\MasterKategoriBarang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -221,6 +222,7 @@ Route::get('/get_barang', function (Request $request) {
         $hasil[] = [
             'id_barang' => $list_data->id_barang,
             'nm_barang' => $list_data->nm_barang,
+            'kategori_barang' => $list_data->kategori_barang->nm_kategori_barang,
             'sts' => $status,
             'buttons' => '
             <form id="delete_form">
@@ -250,3 +252,4 @@ Route::get('/get_view_barang/{id}', [MasterBarangAjaxController::class, 'get_vie
 // Ajax Modul Master Kategori Barang
 Route::get('/kategori_barang_add_modal', [MasterKategoriBarangAjaxController::class, 'kategori_barang_add_modal'])->middleware('auth')->name('kategori_barang_add_modal');
 Route::get('/get_kategori_barang',[MasterKategoriBarangAjaxController::class, 'get_kategori_barang'])->middleware('auth')->name('get_kategori_barang');
+Route::get('/get_data_kategori_barang/{id}',[MasterKategoriBarangAjaxController::class,'get_data_kategori_barang'])->middleware('auth')->name('get_data_kategori_barang');

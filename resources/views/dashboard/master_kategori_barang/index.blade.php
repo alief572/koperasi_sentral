@@ -3,7 +3,7 @@
 @section('content')
     <h4>
         {{ $title }}
-        <button type="button" class="btn btn-sm btn-success ml-2 add_barang">
+        <button type="button" class="btn btn-sm btn-success ml-2 add_kategori_barang">
             <i class="fa fa-plus"></i>
             Tambah Kategori Barang
         </button>
@@ -19,7 +19,7 @@
         </tbody>
     </table>
 
-    <div class="modal fade" id="addBarang" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addKategoriBarang" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -27,7 +27,7 @@
                 </div>
                 <form action="" method="post" id="data_form">
                     {{ csrf_field() }}
-                    <div class="modal-body" id="addBarangMB">
+                    <div class="modal-body" id="addKategoriBarangMB">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Batal</button>
@@ -61,7 +61,7 @@
         $(document).ready(function() {
             // $(".chosen-select").select2({
             //     width: '100%',
-            //     dropdownParent: $("#addBarangMB")
+            //     dropdownParent: $("#addKategoriBarangMB")
             // });
 
             $(".dataTables_filter input").addClass('dtb_search');
@@ -104,39 +104,40 @@
                 pageLength: 10,
             });
 
-            $(document).on("click", ".add_barang", function() {
+            $(document).on("click", ".add_kategori_barang", function() {
                 $.ajax({
                     type: "GET",
                     url: "{{ route('kategori_barang_add_modal') }}",
                     cache: false,
                     success: function(result) {
-                        $("#addBarangMB").html(result);
+                        $("#addKategoriBarangMB").html(result);
                         $(".modal_title_add").text('Tambah Data Kategori Barang');
                         $(".type_post").val('POST');
-                        $("#addBarang").modal('show');
+                        $("#addKategoriBarang").modal('show');
                     }
                 })
             });
 
-            $(document).on("click", ".edit_barang", function() {
-                var id_barang = $(this).data('id_barang');
-                // alert(id_barang);
+            $(document).on("click", ".edit_kategori_barang", function() {
+                var id_kategori_barang = $(this).data('id');
+                // alert(id_kategori_barang);
 
                 $.ajax({
                     type: "GET",
-                    url: "/get_data_barang/" + id_barang,
+                    url: "/get_data_kategori_barang/" + id_kategori_barang,
                     cache: false,
                     success: function(result) {
-                        $("#addBarangMB").html(result);
+                        console.log(result);
+                        $("#addKategoriBarangMB").html(result);
                         $(".modal_title_add").text('Edit Data Kategori Barang');
-                        $("#addBarang").modal('show');
+                        $("#addKategoriBarang").modal('show');
                     }
                 });
             });
 
             $(document).on("submit", "#delete_form", function(e) {
                 e.preventDefault();
-                var id_barang = $(this).data('id_barang');
+                var id = $(this).data('id');
 
                 Swal.fire({
                     icon: "warning",
@@ -149,7 +150,7 @@
 
                         $.ajax({
                             type: "DELETE",
-                            url: "/master_barang/" + id_barang,
+                            url: "/master_kategori_barang/" + id,
                             data: $(this).serialize(),
                             cache: false,
                             success: function(result) {
@@ -175,7 +176,7 @@
                     if (result.isConfirmed) {
                         if(type_post == "POST"){
                             $.ajax({
-                                url: "/master_barang",
+                                url: "/master_kategori_barang",
                                 type: "POST",
                                 data: $(this).serialize(),
                                 dataType: 'JSON',
@@ -183,7 +184,7 @@
                                 success: function(hasil) {
                                     Swal.fire(hasil.success,
                                         "", "success").then((hasil1) => {
-                                        $("#addBarang").modal('hide');
+                                        $("#addKategoriBarang").modal('hide');
                                         dataTable.ajax.reload();
                                     });
                                 },
@@ -198,7 +199,7 @@
                             });
                         }else{
                             $.ajax({
-                                url: "/master_barang/" + $(".id_barang").val(),
+                                url: "/master_kategori_barang/" + $(".id").val(),
                                 type: "PUT",
                                 data: $(this).serialize(),
                                 dataType: 'JSON',
@@ -206,7 +207,7 @@
                                 success: function(hasil) {
                                     Swal.fire(hasil.success,
                                         "", "success").then((hasil1) => {
-                                        $("#addBarang").modal('hide');
+                                        $("#addKategoriBarang").modal('hide');
                                         dataTable.ajax.reload();
                                     });
                                 },

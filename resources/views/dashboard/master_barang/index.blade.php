@@ -12,6 +12,7 @@
         <thead>
             <th>No</th>
             <th>Nama Barang</th>
+            <th>Kategori Barang</th>
             <th>Status</th>
             <th>Action</th>
         </thead>
@@ -60,10 +61,10 @@
 @section('javascript_section')
     <script>
         $(document).ready(function() {
-            // $(".chosen-select").select2({
-            //     width: '100%',
-            //     dropdownParent: $("#addBarangMB")
-            // });
+            $(".chosen-select").select2({
+                width: '100%',
+                dropdownParent: $("#addBarangMB")
+            });
 
             $(".dataTables_filter input").addClass('dtb_search');
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
@@ -87,6 +88,9 @@
                     },
                     {
                         data: 'nm_barang'
+                    },
+                    {
+                        data: 'kategori_barang'
                     },
                     {
                         data: 'sts'
@@ -114,6 +118,7 @@
                     url: "{{ route('barang_add_modal') }}",
                     cache: false,
                     success: function(result) {
+                        console.log(result);
                         $("#addBarangMB").html(result);
                         $(".modal_title_add").text('Tambah Data Barang');
                         $(".type_post").val('POST');
@@ -192,12 +197,14 @@
                                     });
                                 },
                                 error: function(xhr) {
-                                    if (xhr.status === 422) {
-                                        var errors = xhr.responseJSON.errors;
-                                        $.each(errors, function(key, value) {
-                                            $('#' + key + '-error').text(value[0]);
-                                        });
-                                    }
+                                    Swal.fire({
+                                        title : "Failed",
+                                        text : "Tambah data barang gagal !",
+                                        icon : "error"
+                                    }).then((hasil1) => {
+                                        $("#addBarang").modal('hide');
+                                        dataTable.ajax.reload();
+                                    });
                                 }
                             });
                         }else{
@@ -215,12 +222,14 @@
                                     });
                                 },
                                 error: function(xhr) {
-                                    if (xhr.status === 422) {
-                                        var errors = xhr.responseJSON.errors;
-                                        $.each(errors, function(key, value) {
-                                            $('#' + key + '-error').text(value[0]);
-                                        });
-                                    }
+                                    Swal.fire({
+                                        title : "Failed",
+                                        text : "Update data barang gagal !",
+                                        icon : "error"
+                                    }).then((hasil1) => {
+                                        $("#addBarang").modal('hide');
+                                        dataTable.ajax.reload();
+                                    });
                                 }
                             });
                         }

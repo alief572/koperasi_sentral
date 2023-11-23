@@ -36,7 +36,8 @@ class MasterBarangController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-            'nm_barang' => ['required','max:255']
+            'nm_barang' => ['required','max:255'],
+            'kategori_barang' => ['required']
         ]);
 
         $id_barang = MasterBarang::where('id_barang', 'LIKE', '%BAR-' . date('m-y') . '%')->max('id_barang');
@@ -53,6 +54,7 @@ class MasterBarangController extends Controller
 
             $barang->id_barang = $kodecollect;
             $barang->nm_barang = $request->input('nm_barang');
+            $barang->id_kategori_barang = $request->input('kategori_barang');
             $barang->sts = 1;
 
             $barang->save();
@@ -90,7 +92,8 @@ class MasterBarangController extends Controller
     public function update(Request $request, MasterBarang $masterBarang)
     {
         $this->validate($request,[
-            'nm_barang' => ['required','max:255']
+            'nm_barang' => ['required','max:255'],
+            'kategori_barang' => ['required']
         ]);
 
         DB::beginTransaction();
@@ -98,6 +101,7 @@ class MasterBarangController extends Controller
             $barang = MasterBarang::find($request->input('id_barang'));
 
             $barang->nm_barang = $request->input('nm_barang');
+            $barang->id_kategori_barang = $request->input('kategori_barang');
             // $barang->sts = 1;
 
             $barang->save();

@@ -47,7 +47,7 @@ class MasterKategoriBarangAjaxController extends Controller
                 'nm_kategori_barang' => $list_data->nm_kategori_barang,
                 'buttons' => '
             <form id="delete_form">
-                <button type="button" class="btn btn-sm btn-warning text-light edit_barang" data-id="' . $list_data->id . '"><i class="fa fa-edit"></i></button>
+                <button type="button" class="btn btn-sm btn-warning text-light edit_kategori_barang" data-id="' . $list_data->id . '"><i class="fa fa-edit"></i></button>
                     ' . csrf_field() . '
                     <input type="hidden" name="id" value="' . $list_data->id . '">
                     <button type="submit" class="btn btn-sm btn-danger" data-id="' . $list_data->id . '"><i class="fa fa-trash"></i></button>
@@ -62,5 +62,11 @@ class MasterKategoriBarangAjaxController extends Controller
             'recordsFiltered' => $total,
             'data' => $hasil
         ]);
+    }
+
+    public function get_data_kategori_barang($id){
+        $get_data = MasterKategoriBarang::find($id);
+
+        return view('dashboard.master_kategori_barang.add',['get_kategori_barang' => $get_data]);
     }
 }
