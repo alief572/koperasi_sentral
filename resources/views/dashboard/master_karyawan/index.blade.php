@@ -260,11 +260,11 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Data Karyawan</h5>
                 </div>
                 <form action="" method="post" id="edit_form">
                     {{ csrf_field() }}
-                    <input type="hidden" name="id" class="id_karyawan" value="">
+                    <input type="hidden" name="id_karyawan" class="id_karyawan" value="">
                     <div class="modal-body" id="addKaryawanMB">
                         <div class="row">
                             <div class="col-6">
@@ -397,7 +397,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="">Alamat</label>
-                                    <textarea name="alamat" id="" cols="30" rows="3" class="form-control form-control-sm"></textarea>
+                                    <textarea name="alamat" id="" cols="30" rows="3" class="form-control form-control-sm alamat"></textarea>
                                     @error('alamat')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
@@ -418,7 +418,7 @@
                                         <option value="013">Bank Permata </option>
                                         <option value="019">Bank Panin </option>
                                         <option value="016">Bank Maybank </option>
-                                        <option value="009">Bank HSBC </option>
+                                        <option value="099">Bank HSBC </option>
                                         <option value="426">Bank Mega </option>
                                         <option value="200">Bank Tabungan Negara (BTN) </option>
                                         <option value="427">Bank Syariah Indonesia (BSI) </option>
@@ -492,6 +492,23 @@
                         <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="viewUser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">View Data Karyawan</h5>
+                </div>
+
+                <div class="modal-body modal_body_view">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Tutup</button>
+                </div>
             </div>
         </div>
     </div>
@@ -589,11 +606,11 @@
 
             $(document).on("submit", "#delete_form", function(e) {
                 e.preventDefault();
-                var id = $(this).data('id');
+                var id_karyawan = $(this).data('id_karyawan');
 
                 Swal.fire({
                     icon: "warning",
-                    title: "Anda yakin ingin hapus user ini ?",
+                    title: "Anda yakin ingin hapus data karyawan ini ?",
                     showCancelButton: true,
                     confirmButtonText: "Simpan",
                     cancelButtonText: "Batal"
@@ -602,8 +619,8 @@
 
                         $.ajax({
                             type: "DELETE",
-                            url: "/master_user/" + id,
-                            data: $(this).serialize(),
+                            url: "/master_karyawan/" + id_karyawan,
+                            data : $(this).serialize(),
                             cache: false,
                             success: function(result) {
                                 dataTable.ajax.reload();
@@ -653,45 +670,60 @@
                 });
             });
 
-            // $(document).on("submit", "#edit_form", function(e) {
-            //     e.preventDefault();
+            $(document).on("submit", "#edit_form", function(e) {
+                e.preventDefault();
 
-            //     Swal.fire({
-            //         icon: "warning",
-            //         title: "Anda sudah yakin ?",
-            //         showCancelButton: true,
-            //         confirmButtonText: "Simpan",
-            //         cancelButtonText: "Batal"
-            //     }).then((result) => {
-            //         /* Read more about isConfirmed, isDenied below */
-            //         if (result.isConfirmed) {
-            //             $.ajax({
-            //                 url: "/master_user/" + $(".id_karyawan").val(),
-            //                 type: "PUT",
-            //                 data: $(this).serialize(),
-            //                 dataType: 'JSON',
-            //                 cache: false,
-            //                 success: function(hasil) {
-            //                     Swal.fire(hasil.success,
-            //                         "", "success").then((hasil1) => {
-            //                         $("#editUser").modal('hide');
-            //                         dataTable.ajax.reload();
-            //                     });
-            //                 },
-            //                 error: function(xhr) {
-            //                     if (xhr.status === 422) {
-            //                         var errors = xhr.responseJSON.errors;
-            //                         $.each(errors, function(key, value) {
-            //                             $('#' + key + '-error').text(value[0]);
-            //                         });
-            //                     }
-            //                 }
-            //             });
-            //         } else if (result.isDenied) {
-            //             Swal.fire("Data batal di simpan !", "", "info");
-            //         }
-            //     });
-            // });
+                Swal.fire({
+                    icon: "warning",
+                    title: "Anda sudah yakin ?",
+                    showCancelButton: true,
+                    confirmButtonText: "Simpan",
+                    cancelButtonText: "Batal"
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/master_karyawan/" + $(".id_karyawan").val(),
+                            type: "PUT",
+                            data: $(this).serialize(),
+                            dataType: 'JSON',
+                            cache: false,
+                            success: function(hasil) {
+                                Swal.fire(hasil.success,
+                                    "", "success").then((hasil1) => {
+                                    $("#editUser").modal('hide');
+                                    dataTable.ajax.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                if (xhr.status === 422) {
+                                    var errors = xhr.responseJSON.errors;
+                                    $.each(errors, function(key, value) {
+                                        $('#' + key + '-error').text(value[0]);
+                                    });
+                                }
+                            }
+                        });
+                    } else if (result.isDenied) {
+                        Swal.fire("Data batal di simpan !", "", "info");
+                    }
+                });
+            });
+
+            $(document).on("click", ".view_karyawan", function() {
+                var id_karyawan = $(this).data('id_karyawan');
+                // alert(id_karyawan);
+                $.ajax({
+                    type: "GET",
+                    url: "/get_view_karyawan/" + id_karyawan,
+                    cache: false,
+                    success: function(result) {
+                        // console.log(result);
+                        $(".modal_body_view").html(result);
+                        $("#viewUser").modal('show');
+                    }
+                });
+            });
         });
     </script>
 @endsection

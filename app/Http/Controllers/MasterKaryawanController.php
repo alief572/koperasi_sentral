@@ -126,14 +126,77 @@ class MasterKaryawanController extends Controller
      */
     public function update(Request $request, MasterKaryawan $masterKaryawan)
     {
-        //
+        $this->validate($request,[
+            'nm_karyawan' => ['required','max:255'],
+            'no_hp' => ['required', 'numeric'],
+            'email' => ['required', 'email:dns'],
+            'tgl_lahir' => ['date'],
+            'tempat_lahir' => ['max:255'],
+            'gender' => ['max:255'],
+            'agama' => ['max:255'],
+            'tgl_mulai_kerja' => ['date'],
+            'tgl_resign' => ['date'],
+            'pendidikan_terakhir' => ['max:255'],
+            'no_kartu_keluarga' => ['numeric'],
+            'no_bpjs' => ['numeric'],
+            'no_npwp' => ['numeric'],
+            'bank' => ['max:255'],
+            'nomor_akun_bank' => ['numeric'],
+            'nama_akun_bank' => ['max:255'],
+            'swift_code' => ['numeric']
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $karyawan = MasterKaryawan::find($request->input('id_karyawan'));
+
+            $karyawan->nm_karyawan = $request->input('nm_karyawan');
+            $karyawan->no_hp = $request->input('no_hp');
+            $karyawan->email = $request->input('email');
+            $karyawan->birth_place = $request->input('tempat_lahir');
+            $karyawan->birth_date = $request->input('tgl_lahir');
+            $karyawan->gender = $request->input('gender');
+            $karyawan->religion = $request->input('agama');
+            $karyawan->tgl_mulai_kerja = $request->input('tgl_mulai_kerja');
+            $karyawan->tgl_resign = $request->input('tgl_resign');
+            $karyawan->pendidikan_terakhir = $request->input('pendidikan_terakhir');
+            $karyawan->no_kartu_keluarga = $request->input('no_kartu_keluarga');
+            $karyawan->no_bpjs = $request->input('no_bpjs');
+            $karyawan->no_npwp = $request->input('no_npwp');
+            $karyawan->alamat = $request->input('alamat');
+            $karyawan->bank_name = $request->input('bank');
+            $karyawan->bank_account_number = $request->input('nomor_akun_bank');
+            $karyawan->bank_account_name = $request->input('nama_akun_bank');
+            $karyawan->bank_address = $request->input('alamat_bank');
+            $karyawan->swift_code = $request->input('swift_code');
+
+            $karyawan->save();
+
+            DB::commit();
+
+            return response()->json(['success' => 'Data karyawan telah tersimpan !'], 200);
+
+        } catch (\Throwable $th) {
+            DB::rollback();
+            $valid = 0;
+
+            return response()->json(['error' => $th->getMessage()], 422);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(MasterKaryawan $masterKaryawan)
+    public function destroy(Request $request)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            MasterKaryawan::destroy($request->input('id_karyawan'));
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollback();
+        }
     }
 }
