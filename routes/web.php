@@ -8,6 +8,8 @@ use App\Http\Controllers\MasterKaryawanController;
 use App\Http\Controllers\MasterKategoriBarangController;
 use App\Http\Controllers\MasterKategoriBarangAjaxController;
 use App\Http\Controllers\MasterUserController;
+use App\Http\Controllers\PeminjamanAssetAjaxController;
+use App\Http\Controllers\PeminjamanAssetController;
 use App\Models\MasterKaryawan;
 use App\Models\MasterBarang;
 use App\Models\MasterKategoriBarang;
@@ -49,6 +51,9 @@ Route::resource('/master_barang', MasterBarangController::class)->middleware('au
 
 // Master Kategori Barang
 Route::resource('/master_kategori_barang', MasterKategoriBarangController::class)->middleware('auth');
+
+// Peminjaman Asset
+Route::resource('/peminjaman_asset',PeminjamanAssetController::class)->middleware('auth');
 
 // Ajax Get Data
 Route::get('/get_user', function () {
@@ -253,3 +258,11 @@ Route::get('/get_view_barang/{id}', [MasterBarangAjaxController::class, 'get_vie
 Route::get('/kategori_barang_add_modal', [MasterKategoriBarangAjaxController::class, 'kategori_barang_add_modal'])->middleware('auth')->name('kategori_barang_add_modal');
 Route::get('/get_kategori_barang',[MasterKategoriBarangAjaxController::class, 'get_kategori_barang'])->middleware('auth')->name('get_kategori_barang');
 Route::get('/get_data_kategori_barang/{id}',[MasterKategoriBarangAjaxController::class,'get_data_kategori_barang'])->middleware('auth')->name('get_data_kategori_barang');
+
+// Ajax Modul Peminjaman Asset
+Route::get('/get_peminjaman_asset',[PeminjamanAssetAjaxController::class,'get_peminjaman_asset'])->middleware('auth')->name('get_peminjaman_asset');
+Route::get('/add_modal_peminjaman_asset',[PeminjamanAssetAjaxController::class,'add_modal_peminjaman_asset'])->middleware('auth')->name('add_modal_peminjaman_asset');
+Route::post('/get_peminjaman_asset_list_karyawan',[PeminjamanAssetAjaxController::class,'get_peminjaman_asset_list_karyawan'])->middleware('auth');
+Route::post('/get_asset',[PeminjamanAssetAjaxController::class,'get_asset'])->middleware('auth');
+Route::post('/add_item_peminjaman_asset',[PeminjamanAssetAjaxController::class,'add_item_peminjaman_asset'])->middleware('auth');
+Route::delete('/del_item_peminjaman_asset/{id}',[PeminjamanAssetAjaxController::class,'del_item_peminjaman_asset'])->middleware('auth');

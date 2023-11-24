@@ -23,6 +23,16 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/themes/bootstrap-4.min.css" />
 
+    <style>
+        .select2-container--default .select2-selection--single {
+            background-color: transparent;
+            border: 1px solid #ccc;
+            /* Add a border to the input for visibility */
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #ffffff !important; /* Change to your desired color */
+        }
+    </style>
 
 </head>
 
