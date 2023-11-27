@@ -46,7 +46,18 @@
                 <form action="" method="post" id="data_form">
                     {{ csrf_field() }}
                     <input type="hidden" name="type_form" class="type_form">
-                    <div class="modal-body">
+                    <div class="modal-body addUserMB">
+                        <div class="form-group">
+                            <label for="">Kategori User</label>
+                            <select name="kategori_user" id="" class="form-control form-control-sm chosen-select" required>
+                                <option value="">- Kategori User -</option>
+                                <option value="1">Admin</option>
+                                <option value="2">Admin Peminjaman Asset</option>
+                            </select>
+                            @error('kategori_user')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                         <div class="form-group">
                             <label for="">Nama User</label>
                             <input type="text" name="nm_user" id="" class="form-control form-control-sm"
@@ -97,7 +108,18 @@
                 <form action="" method="post" id="edit_form">
                     {{ csrf_field() }}
                     <input type="hidden" name="id" class="id_user" value="">
-                    <div class="modal-body">
+                    <div class="modal-body editUserMB">
+                        <div class="form-group">
+                            <label for="">Kategori User</label>
+                            <select name="kategori_user" id="" class="form-control form-control-sm chosen_select_edit kategori_user" required>
+                                <option value="">- Kategori User -</option>
+                                <option value="1">Admin</option>
+                                <option value="2">Admin Peminjaman Asset</option>
+                            </select>
+                            @error('kategori_user')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
                         <div class="form-group">
                             <label for="">Nama User</label>
                             <input type="text" name="nm_user" id="" class="form-control form-control-sm nm_user"
@@ -141,6 +163,14 @@
 
 @section('javascript_section')
     <script>
+        $(".chosen-select").select2({
+            width: '100%',
+            dropdownParent: $(".addUserMB")
+        });
+        $(".chosen_select_edit").select2({
+            width: '100%',
+            dropdownParent: $(".editUserMB")
+        });
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
         var dataTable = $(".data-table").DataTable({
             ajax: {
@@ -201,6 +231,7 @@
                         $(".nm_user").val(result.name);
                         $(".email").val(result.email);
                         $(".username").val(result.username);
+                        $(".kategori_user").val(result.kategori_user).trigger("change");
                     }
                 });
             });

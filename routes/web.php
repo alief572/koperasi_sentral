@@ -266,3 +266,6 @@ Route::post('/get_peminjaman_asset_list_karyawan',[PeminjamanAssetAjaxController
 Route::post('/get_asset',[PeminjamanAssetAjaxController::class,'get_asset'])->middleware('auth');
 Route::post('/add_item_peminjaman_asset',[PeminjamanAssetAjaxController::class,'add_item_peminjaman_asset'])->middleware('auth');
 Route::delete('/del_item_peminjaman_asset/{id}',[PeminjamanAssetAjaxController::class,'del_item_peminjaman_asset'])->middleware('auth');
+Route::get('/view_detail_peminjaman/{id}',[PeminjamanAssetAjaxController::class,'view_detail_peminjaman'])->middleware('auth');
+Route::put('/approve_peminjaman_asset/{id}',[PeminjamanAssetAjaxController::class,'approve_peminjaman_asset'])->middleware('auth');
+Route::put('/pengembalian_asset/{id}',[PeminjamanAssetAjaxController::class,'pengembalian_asset'])->middleware('auth');

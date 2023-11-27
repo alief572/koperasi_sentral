@@ -37,6 +37,7 @@ class MasterUserController extends Controller
     {
 
         $validate = $request->validate([
+            'kategori_user' => 'required|max:255',
             'nm_user' => 'required|max:255',
             'username' => 'required|max:255',
             'password' => 'required',
@@ -47,6 +48,7 @@ class MasterUserController extends Controller
         $email = $request->input('email');
         $password = Hash::make($request->input('password'));
         $nm_user = $request->input('nm_user');
+        $kategori_user = $request->input('kategori_user');
 
         DB::beginTransaction();
         try {
@@ -57,6 +59,7 @@ class MasterUserController extends Controller
             $user->username = $username;
             $user->password = $password;
             $user->sts = 1;
+            $user->kategori_user = $kategori_user;
             $user->save();
 
             DB::commit();
@@ -93,6 +96,7 @@ class MasterUserController extends Controller
     public function update(Request $request, User $user)
     {
         $validate = $request->validate([
+            'kategori_user' => 'required|max:255',
             'nm_user' => 'required|max:255',
             'username' => 'required|max:255',
             'email' => 'required|email:dns'
@@ -104,11 +108,13 @@ class MasterUserController extends Controller
         $email = $request->input('email');
         $password = Hash::make($request->input('password'));
         $nm_user = $request->input('nm_user');
+        $kategori_user = $request->input('kategori_user');
 
         $updateData = array();
         $updateData['name'] = $nm_user;
         $updateData['email'] = $email;
         $updateData['username'] = $username;
+        $updateData['kategori_user'] = $kategori_user;
         if($request->input('password') !== ""){
             $updateData['password'] = $password;
         }

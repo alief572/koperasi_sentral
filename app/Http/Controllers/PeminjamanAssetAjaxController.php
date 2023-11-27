@@ -25,20 +25,18 @@ class PeminjamanAssetAjaxController extends Controller
         $draw = request()->input('draw');
         $start = request()->input('start');
         $length = request()->input('length');
-        $search = request()->input('search.value');
+        $search = request()->input('search');
 
-        if ($search_val !== "" && $search_val !== null) {
-            $data = PeminjamanAsset::where('nm_karawan', 'LIKE', '%' . $search_val . '%')
-                ->orWhere('tgl_awal_peminjaman', 'LIKE', '%' . $search_val . '%')
+        if ($search !== "" && $search !== null) {
+            $data = PeminjamanAsset::where('nm_karyawan', 'LIKE', '%' . $search . '%')
+                ->orWhere('tgl_awal_peminjaman', 'LIKE', '%' . $search . '%')
                 ->orWhere('tgl_pengembalian', 'LIKE', '%' . $search . '%')
-                ->orWhere('IF(sts = 1,"Approved","Waiting Approval")', 'LIKE', '%' . $search_val . '%')
                 ->skip($start)
                 ->take($length);
 
-            $all_data = PeminjamanAsset::where('nm_karawan', 'LIKE', '%' . $search_val . '%')
-                ->orWhere('tgl_awal_peminjaman', 'LIKE', '%' . $search_val . '%')
+            $all_data = PeminjamanAsset::where('nm_karyawan', 'LIKE', '%' . $search . '%')
+                ->orWhere('tgl_awal_peminjaman', 'LIKE', '%' . $search . '%')
                 ->orWhere('tgl_pengembalian', 'LIKE', '%' . $search . '%')
-                ->orWhere('IF(sts = 1,"Approved","Waiting Approval")', 'LIKE', '%' . $search_val . '%')
                 ->limit(50);
         } else {
             $data = PeminjamanAsset::skip($start)->take($length);
@@ -61,6 +59,23 @@ class PeminjamanAssetAjaxController extends Controller
                 $status = '<div class="badge badge-warning text-light">Request Approval</div>';
             }
 
+            $apprv_btn = "";
+            if ($list_data->sts == 0) {
+                $apprv_btn = '<button type="button" class="btn btn-sm btn-success approve_peminjaman" data-id_peminjaman_asset="' . $list_data->id_peminjaman_asset . '"><i class="fa fa-check"></i></button>';
+            } else {
+                if ($list_data->sts == 1) {
+                    $apprv_btn = '<button type="button" class="btn btn-sm btn-success pengembalian_asset" data-id_peminjaman_asset="' . $list_data->id_peminjaman_asset . '"><i class="fa fa-check"></i></button>';
+                }
+            }
+
+            $edit_btn = '';
+            $del_btn = '';
+            $view_btn = '<button type="button" class="btn btn-sm btn-info view_barang" data-id_peminjaman_asset="' . $list_data->id_peminjaman_asset . '"><i class="fa fa-eye"></i></button>';
+            if ($list_data->sts == 0) {
+                $edit_btn = ' <button type="button" class="btn btn-sm btn-warning text-light edit_barang" data-id_peminjaman_asset="' . $list_data->id_peminjaman_asset . '"><i class="fa fa-edit"></i></button>';
+                $del_btn = '<button type="submit" class="btn btn-sm btn-danger" data-id_peminjaman_asset="' . $list_data->id_peminjaman_asset . '"><i class="fa fa-trash"></i></button>';
+            }
+
             $hasil[] = [
                 'id_peminjaman_asset' => $list_data->id_peminjaman_asset,
                 'id_karyawan' => $list_data->id_karyawan,
@@ -70,12 +85,13 @@ class PeminjamanAssetAjaxController extends Controller
                 'sts' => $status,
                 'buttons' => '
                 <form id="delete_form">
-                    <button type="button" class="btn btn-sm btn-info view_barang" data-id_peminjaman_asset="' . $list_data->id_peminjaman_asset . '"><i class="fa fa-eye"></i></button>
-                    <button type="button" class="btn btn-sm btn-warning text-light edit_barang" data-id_peminjaman_asset="' . $list_data->id_peminjaman_asset . '"><i class="fa fa-edit"></i></button>
-                        ' . csrf_field() . '
-                        <input type="hidden" name="id_peminjaman_asset" value="' . $list_data->id_peminjaman_asset . '">
-                        <button type="submit" class="btn btn-sm btn-danger" data-id_peminjaman_asset="' . $list_data->id_peminjaman_asset . '"><i class="fa fa-trash"></i></button>
-                    </form>
+                    ' . $apprv_btn . '
+                    '.$view_btn.'
+                    '.$edit_btn.'
+                    ' . csrf_field() . '
+                    <input type="hidden" name="id_peminjaman_asset" value="' . $list_data->id_peminjaman_asset . '">
+                    '.$del_btn.'
+                </form>
                 '
             ];
         }
@@ -122,9 +138,9 @@ class PeminjamanAssetAjaxController extends Controller
     public function get_asset(Request $request)
     {
         $searchTerm = $request->input('searchTerm');
-        if(!empty($searchTerm)){
+        if (!empty($searchTerm)) {
             $getData = MasterBarang::where('nm_barang', 'LIKE', '%' . ($request->input('searchTerm')) . '%')->where('sts', '=', 1)->limit(50)->get();
-        }else{
+        } else {
             $getData = MasterBarang::where('sts', '=', 1)->limit(50)->get();
         }
 
@@ -142,8 +158,10 @@ class PeminjamanAssetAjaxController extends Controller
         echo json_encode($hasil);
     }
 
-    public function add_item_peminjaman_asset(Request $request){
+    public function add_item_peminjaman_asset(Request $request)
+    {
         $item_asset = $request->input('item_asset');
+        $id_peminjaman_asset = $request->input('id_peminjaman_asset');
 
         $data_asset = MasterBarang::find($item_asset);
         $nm_asset = $data_asset->nm_barang;
@@ -161,7 +179,7 @@ class PeminjamanAssetAjaxController extends Controller
             $peminjaman_asset2 = new PeminjamanAsset2;
 
             $peminjaman_asset2->id_peminjaman_asset2 = $kodecollect;
-            $peminjaman_asset2->id_peminjaman_asset = auth()->user()->id;
+            $peminjaman_asset2->id_peminjaman_asset = $id_peminjaman_asset;
             $peminjaman_asset2->id_asset = $item_asset;
             $peminjaman_asset2->nm_asset = $nm_asset;
 
@@ -173,16 +191,16 @@ class PeminjamanAssetAjaxController extends Controller
             DB::rollback();
         }
         $hasil = array();
-        $get_peminjaman_asset_item = PeminjamanAsset2::where('id_peminjaman_asset','=',auth()->user()->id)->get();
+        $get_peminjaman_asset_item = PeminjamanAsset2::where('id_peminjaman_asset', '=', $id_peminjaman_asset)->get();
 
         $no = 1;
-        foreach($get_peminjaman_asset_item as $list_item){
+        foreach ($get_peminjaman_asset_item as $list_item) {
             $hasil[] = '
                 <tr>
-                    <td class="text-center">'.$no.'</td>
-                    <td>'.$list_item->barang->nm_barang.'</td>
+                    <td class="text-center">' . $no . '</td>
+                    <td>' . $list_item->barang->nm_barang . '</td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-danger del_item_asset" data-id_peminjaman_asset2="'.$list_item->id_peminjaman_asset2.'">
+                        <button type="button" class="btn btn-sm btn-danger del_item_asset" data-id_peminjaman_asset2="' . $list_item->id_peminjaman_asset2 . '">
                             <i class="fa fa-trash"></i>
                         </button>
                     </td>
@@ -194,7 +212,8 @@ class PeminjamanAssetAjaxController extends Controller
         echo json_encode($hasil);
     }
 
-    public function del_item_peminjaman_asset(Request $request){
+    public function del_item_peminjaman_asset(Request $request)
+    {
         DB::beginTransaction();
         try {
             PeminjamanAsset2::destroy($request->input('id_peminjaman_asset2'));
@@ -205,16 +224,16 @@ class PeminjamanAssetAjaxController extends Controller
         }
 
         $hasil = array();
-        $get_peminjaman_asset_item = PeminjamanAsset2::where('id_peminjaman_asset','=',auth()->user()->id)->get();
+        $get_peminjaman_asset_item = PeminjamanAsset2::where('id_peminjaman_asset', '=', auth()->user()->id)->get();
 
         $no = 1;
-        foreach($get_peminjaman_asset_item as $list_item){
+        foreach ($get_peminjaman_asset_item as $list_item) {
             $hasil[] = '
                 <tr>
-                    <td class="text-center">'.$no.'</td>
-                    <td>'.$list_item->barang->nm_barang.'</td>
+                    <td class="text-center">' . $no . '</td>
+                    <td>' . $list_item->barang->nm_barang . '</td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-danger del_item_asset" data-id_peminjaman_asset2="'.$list_item->id_peminjaman_asset2.'">
+                        <button type="button" class="btn btn-sm btn-danger del_item_asset" data-id_peminjaman_asset2="' . $list_item->id_peminjaman_asset2 . '">
                             <i class="fa fa-trash"></i>
                         </button>
                     </td>
@@ -224,5 +243,53 @@ class PeminjamanAssetAjaxController extends Controller
         }
 
         echo json_encode($hasil);
+    }
+
+    public function view_detail_peminjaman($id)
+    {
+        return view('dashboard.peminjaman_asset.view', [
+            'data_peminjaman' => PeminjamanAsset::find($id),
+            'data_asset_peminjaman' => PeminjamanAsset2::where('id_peminjaman_asset', '=', $id)->get()
+        ]);
+    }
+
+    public function approve_peminjaman_asset($id)
+    {
+        DB::beginTransaction();
+        try {
+            $approve_peminjaman = PeminjamanAsset::find($id);
+            $approve_peminjaman->sts = 1;
+
+            $approve_peminjaman->save();
+
+            DB::commit();
+            return response()->json(['success' => 'Peminjaman Asset telah di approve !'], 200);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json(['error' => $th->getMessage()], 422);
+        }
+    }
+    public function pengembalian_asset($id)
+    {
+        DB::beginTransaction();
+        try {
+            $approve_peminjaman = PeminjamanAsset::find($id);
+            $approve_peminjaman->sts = 2;
+
+            $approve_peminjaman->save();
+
+            $get_peminjaman_asset = PeminjamanAsset2::where('id_peminjaman_asset', '=', $id)->get();
+            foreach($get_peminjaman_asset as $list_asset){
+                MasterBarang::where('id_barang', '=', $list_asset->id_asset)->update([
+                    'sts' => 1
+                ]);
+            }
+
+            DB::commit();
+            return response()->json(['success' => 'Asset telah di kembalikan !'], 200);
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return response()->json(['error' => $th->getMessage()], 422);
+        }
     }
 }

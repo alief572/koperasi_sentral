@@ -27,10 +27,9 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title modal_title_add" id="exampleModalLabel">Tambah Data Karyawan</h5>
+                    <h5 class="modal-title modal_title_add" id="exampleModalLabel">Tambah Data Peminjaman</h5>
                 </div>
                 <form action="" method="post" id="data_form">
-                    {{ csrf_field() }}
                     <div class="modal-body" id="addPeminjamanAssetMB">
                     </div>
                     <div class="modal-footer">
@@ -46,7 +45,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">View Data Karyawan</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">View Data Peminjaman</h5>
                 </div>
 
                 <div class="modal-body modal_body_view">
@@ -114,6 +113,20 @@
                 pageLength: 10,
             });
 
+            $(document).on("click", ".view_barang", function() {
+                var id_peminjaman_asset = $(this).data('id_peminjaman_asset');
+
+                $.ajax({
+                    type: "GET",
+                    url: "/view_detail_peminjaman/" + id_peminjaman_asset,
+                    cache: false,
+                    success: function(result) {
+                        $(".modal_body_view").html(result);
+                        $("#viewBarang").modal('show');
+                    }
+                });
+            });
+
             $(document).on("click", ".add_peminjaman_asset", function() {
                 $.ajax({
                     type: "GET",
@@ -127,6 +140,7 @@
             });
 
             $(document).on("click", ".add_asset", function() {
+                var id_peminjaman_asset = $(".id_peminjaman_asset").val();
                 var item_asset = $(".item_asset").val();
 
                 $.ajax({
@@ -134,7 +148,8 @@
                     url: '/add_item_peminjaman_asset',
                     data: {
                         '_token': '{{ csrf_token() }}',
-                        'item_asset': item_asset
+                        'item_asset': item_asset,
+                        'id_peminjaman_asset': id_peminjaman_asset
                     },
                     dataType: 'JSON',
                     cache: false,
@@ -153,12 +168,158 @@
                     url: '/del_item_peminjaman_asset/' + id_peminjaman_asset2,
                     data: {
                         '_token': '{{ csrf_token() }}',
-                        'id_peminjaman_asset2' : id_peminjaman_asset2
+                        'id_peminjaman_asset2': id_peminjaman_asset2
                     },
                     dataType: 'JSON',
                     cache: false,
                     success: function(result) {
                         $(".list_asset").html(result);
+                    }
+                });
+            });
+
+            $(document).on("submit", "#data_form", function(e) {
+                e.preventDefault();
+                var type_post = $(".type_post").val();
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Anda sudah yakin ?",
+                    showCancelButton: true,
+                    confirmButtonText: "Simpan",
+                    cancelButtonText: "Batal"
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        if (type_post == "POST") {
+                            $.ajax({
+                                url: "/peminjaman_asset",
+                                type: "POST",
+                                data: $(this).serialize(),
+                                dataType: 'JSON',
+                                cache: false,
+                                success: function(hasil) {
+                                    Swal.fire(hasil.success,
+                                        "", "success").then((hasil1) => {
+                                        $("#addPeminjamanAsset").modal('hide');
+                                        dataTable.ajax.reload();
+                                    });
+                                },
+                                error: function(xhr) {
+                                    if (xhr.status === 422) {
+                                        var errors = xhr.responseJSON.errors;
+                                        $.each(errors, function(key, value) {
+                                            $('#' + key + '-error').text(value[
+                                                0]);
+                                        });
+                                    }
+                                }
+                            });
+                        } else {
+                            $.ajax({
+                                url: "/peminjaman_asset/" + $(".id_peminjaman_asset").val(),
+                                type: "PUT",
+                                data: $(this).serialize(),
+                                dataType: 'JSON',
+                                cache: false,
+                                success: function(hasil) {
+                                    Swal.fire(hasil.success,
+                                        "", "success").then((hasil1) => {
+                                        $("#addPeminjamanAsset").modal('hide');
+                                        dataTable.ajax.reload();
+                                    });
+                                },
+                                error: function(xhr) {
+                                    if (xhr.status === 422) {
+                                        var errors = xhr.responseJSON.errors;
+                                        $.each(errors, function(key, value) {
+                                            $('#' + key + '-error').text(value[
+                                                0]);
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    } else if (result.isDenied) {
+                        Swal.fire("Data batal di simpan !", "", "info");
+                    }
+                });
+            });
+
+            $(document).on("click", ".approve_peminjaman", function() {
+                var id_peminjaman_asset = $(this).data('id_peminjaman_asset');
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Anda yakin ingin approve peminjaman asset ini ?",
+                    showCancelButton: true,
+                    confirmButtonText: "Approve",
+                    cancelButtonText: "Batal"
+                }).then((hasil) => {
+                    if (hasil.isConfirmed) {
+                        $.ajax({
+                            type: "PUT",
+                            url: "/approve_peminjaman_asset/" + id_peminjaman_asset,
+                            data : {
+                                "_token" : "{{ csrf_token() }}",
+                                "id_peminjaman_asset" : id_peminjaman_asset
+                            },
+                            cache: false,
+                            success: function(result) {
+                                Swal.fire(result.success,
+                                    "", "success").then((hasil1) => {
+                                    dataTable.ajax.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                if (xhr.status === 422) {
+                                    var errors = xhr.responseJSON.errors;
+                                    $.each(errors, function(key, value) {
+                                        $('#' + key + '-error').text(value[
+                                            0]);
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+
+            $(document).on("click", ".pengembalian_asset", function() {
+                var id_peminjaman_asset = $(this).data('id_peminjaman_asset');
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Anda yakin asset ini sudah di kembalikan ?",
+                    showCancelButton: true,
+                    confirmButtonText: "Approve",
+                    cancelButtonText: "Batal"
+                }).then((hasil) => {
+                    if (hasil.isConfirmed) {
+                        $.ajax({
+                            type: "PUT",
+                            url: "/pengembalian_asset/" + id_peminjaman_asset,
+                            data : {
+                                "_token" : "{{ csrf_token() }}",
+                                "id_peminjaman_asset" : id_peminjaman_asset
+                            },
+                            cache: false,
+                            success: function(result) {
+                                Swal.fire(result.success,
+                                    "", "success").then((hasil1) => {
+                                    dataTable.ajax.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                if (xhr.status === 422) {
+                                    var errors = xhr.responseJSON.errors;
+                                    $.each(errors, function(key, value) {
+                                        $('#' + key + '-error').text(value[
+                                            0]);
+                                    });
+                                }
+                            }
+                        });
                     }
                 });
             });

@@ -2,7 +2,7 @@
     <div class="col-12">
         {{ csrf_field() }}
         <input type="hidden" name="id_peminjaman_asset" class="id_peminjaman_asset"
-            value="{{ isset($peminjaman_asset) ? $peminjaman_asset->id_peminjaman_asset : null }}">
+            value="{{ isset($peminjaman_asset) ? $peminjaman_asset->id_peminjaman_asset : auth()->user()->username }}">
         <input type="hidden" name="type_post" class="type_post" value="{{ isset($peminjaman_asset) ? 'PUT' : 'POST' }}">
     </div>
     <div class="col-6">
