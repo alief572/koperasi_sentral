@@ -323,6 +323,45 @@
                     }
                 });
             });
+
+            $(document).on("click",".reject_peminjaman",function(){
+                var id_peminjaman_asset = $(this).data('id_peminjaman_asset');
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Anda yakin ingin me-reject peminjaman ini ?",
+                    showCancelButton: true,
+                    confirmButtonText: "Reject",
+                    cancelButtonText: "Batal"
+                }).then((hasil) => {
+                    if (hasil.isConfirmed) {
+                        $.ajax({
+                            type: "PUT",
+                            url: "/reject_peminjaman/" + id_peminjaman_asset,
+                            data : {
+                                "_token" : "{{ csrf_token() }}",
+                                "id_peminjaman_asset" : id_peminjaman_asset
+                            },
+                            cache: false,
+                            success: function(result) {
+                                Swal.fire(result.success,
+                                    "", "success").then((hasil1) => {
+                                    dataTable.ajax.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                if (xhr.status === 422) {
+                                    var errors = xhr.responseJSON.errors;
+                                    $.each(errors, function(key, value) {
+                                        $('#' + key + '-error').text(value[
+                                            0]);
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            });
         });
     </script>
 @endsection
