@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('id_karyawan');
             $table->string('nm_karyawan');
             $table->date('tgl_peminjaman');
+            $table->string('tipe_pinjaman');
             $table->integer('tenor');
             $table->decimal('nilai_peminjaman', $precision = 20, $scale = 2);
             $table->string('sts');

@@ -3,17 +3,17 @@
 @section('content')
     <h4>
         {{ $title }}
-        <button type="button" class="btn btn-sm btn-success ml-2 add_pemasukan_modal">
+        <button type="button" class="btn btn-sm btn-success ml-2 add_pengeluaran_modal">
             <i class="fa fa-plus"></i>
-            Tambah Pemasukan
+            Tambah Pengeluaran
         </button>
     </h4>
     <table class="table table-striped data-table">
         <thead>
             <th class="text-center">No</th>
             <th class="text-center">Nama Karyawan</th>
-            <th class="text-center">Tgl Pemasukan</th>
-            <th class="text-center">Nilai Pemasukan</th>
+            <th class="text-center">Tgl Pengeluaran</th>
+            <th class="text-center">Nilai Pengeluaran</th>
             <th class="text-center">Keterangan</th>
             <th class="text-center">Status</th>
             <th class="text-center">Action</th>
@@ -23,7 +23,7 @@
         </tbody>
     </table>
 
-    <div class="modal fade" id="addPemasukan" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addPengeluaran" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -31,7 +31,7 @@
                 </div>
                 <form action="" method="post" id="data_form">
                     {{ csrf_field() }}
-                    <div class="modal-body" id="addPemasukanTabunganMB">
+                    <div class="modal-body" id="addPengeluaranTabunganMB">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-sm btn-danger batal" data-dismiss="modal">Batal</button>
@@ -65,7 +65,7 @@
         $(document).ready(function() {
             $(".chosen-select").select2({
                 width: '100%',
-                dropdownParent: $("#addPemasukanTabunganMB")
+                dropdownParent: $("#addPengeluaranTabunganMB")
             });
 
             $(".dataTables_filter input").addClass('dtb_search');
@@ -77,7 +77,7 @@
                     $('.dataTables_filter input').addClass('dtb_search');
                 },
                 ajax: {
-                    url: "{{ route('get_pemasukan_tabungan') }}",
+                    url: "{{ route('get_pengeluaran_tabungan') }}",
                     type: "GET",
                     dataType: "JSON",
                     data: function(d) {
@@ -126,22 +126,23 @@
                 pageLength: 10
             });
 
-            $(document).on("click", ".add_pemasukan_modal", function() {
+            $(document).on("click", ".add_pengeluaran_modal", function() {
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('add_pemasukan_modal') }}",
+                    url: "{{ route('add_pengeluaran_modal') }}",
                     cache: false,
                     beforeSend: function(result) {
-                        $('.add_pemasukan_modal').html('<i class="fa fa-spin fa-spinner"></i>');
+                        $('.add_pengeluaran_modal').html(
+                            '<i class="fa fa-spin fa-spinner"></i>');
                     },
                     success: function(result) {
-                        $("#addPemasukanTabunganMB").html(result);
-                        $(".modal_title_add").text('Buat Pemasukan');
+                        $("#addPengeluaranTabunganMB").html(result);
+                        $(".modal_title_add").text('Buat Pengeluaran');
                         $(".type_post").val('POST');
-                        $("#addPemasukan").modal('show');
+                        $("#addPengeluaran").modal('show');
 
-                        $('.add_pemasukan_modal').html(
-                            '<i class="fa fa-plus"></i> Tambah Pemasukan');
+                        $('.add_pengeluaran_modal').html(
+                            '<i class="fa fa-plus"></i> Tambah Pengeluaran');
 
                         $(".simpan").show();
                     }
@@ -154,7 +155,7 @@
 
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('view_pemasukan_tabungan') }}",
+                    url: "{{ route('view_pengeluaran_tabungan') }}",
                     data: {
                         _token: "{{ csrf_token() }}",
                         id: id
@@ -164,9 +165,9 @@
                         $(".view_" + id).html('<i class="fa fa-spin fa-spinner"></i>');
                     },
                     success: function(result) {
-                        $("#addPemasukanTabunganMB").html(result);
-                        $(".modal_title_add").text('Data Pemasukan tabungan');
-                        $("#addPemasukan").modal('show');
+                        $("#addPengeluaranTabunganMB").html(result);
+                        $(".modal_title_add").text('Data Pengeluaran tabungan');
+                        $("#addPengeluaran").modal('show');
 
                         $(".view_" + id).html(
                             '<i class="fa fa-eye"></i>');
@@ -175,29 +176,29 @@
                 });
             });
 
-            $(document).on("click", ".edit_pemasukan_tabungan", function() {
+            $(document).on("click", ".edit_pengeluaran_tabungan", function() {
 
                 var id = $(this).data("id");
                 // alert(id);
 
                 $.ajax({
                     type: "GET",
-                    url: "{{ route('edit_pemasukan_tabungan_modal') }}",
+                    url: "{{ route('edit_pengeluaran_tabungan_modal') }}",
                     data: {
                         _token: "{{ csrf_token() }}",
                         id: id
                     },
                     cache: false,
                     beforeSend: function(result) {
-                        $(".edit_pemasukan_tabungan_" + id).html(
+                        $(".edit_pengeluaran_tabungan_" + id).html(
                             '<i class="fa fa-spin fa-spinner"></i>');
                     },
                     success: function(result) {
-                        $("#addPemasukanTabunganMB").html(result);
-                        $(".modal_title_add").text('Data Pemasukan tabungan');
-                        $("#addPemasukan").modal('show');
+                        $("#addPengeluaranTabunganMB").html(result);
+                        $(".modal_title_add").text('Data Pengeluaran tabungan');
+                        $("#addPengeluaran").modal('show');
 
-                        $(".edit_pemasukan_tabungan_" + id).html(
+                        $(".edit_pengeluaran_tabungan_" + id).html(
                             '<i class="fa fa-pencil"></i>');
                         $(".simpan").show();
                     }
@@ -219,7 +220,7 @@
                     if (result.isConfirmed) {
                         if (type_post == "POST") {
                             $.ajax({
-                                url: "{{ route('save_pemasukan_tabungan') }}",
+                                url: "{{ route('save_pengeluaran_tabungan') }}",
                                 type: "POST",
                                 data: $(this).serialize(),
                                 dataType: 'JSON',
@@ -228,13 +229,13 @@
                                     if (hasil.status == '1') {
                                         Swal.fire(hasil.msg,
                                             "", "success").then((hasil1) => {
-                                            $("#addPemasukan").modal('hide');
+                                            $("#addPengeluaran").modal('hide');
                                             dataTable.ajax.reload();
                                         });
                                     } else {
                                         Swal.fire(hasil.msg,
                                             "", "error").then((hasil1) => {
-                                            // $("#addPemasukan").modal('hide');
+                                            // $("#addPengeluaran").modal('hide');
                                             // dataTable.ajax.reload();
                                         });
                                     }
@@ -242,17 +243,17 @@
                                 error: function(xhr) {
                                     Swal.fire({
                                         title: "Failed",
-                                        text: "Maaf, pemasukan tabungan gagal dibuat, silahkan dicoba kembali !",
+                                        text: "Maaf, pengeluaran tabungan gagal dibuat, silahkan dicoba kembali !",
                                         icon: "error"
                                     }).then((hasil1) => {
-                                        // $("#addPemasukan").modal('hide');
+                                        // $("#addPengeluaran").modal('hide');
                                         // dataTable.ajax.reload();
                                     });
                                 }
                             });
                         } else {
                             $.ajax({
-                                url: "{{ route('edit_pemasukan_tabungan') }}",
+                                url: "{{ route('edit_pengeluaran_tabungan') }}",
                                 type: "PUT",
                                 data: $(this).serialize(),
                                 dataType: 'JSON',
@@ -261,13 +262,13 @@
                                     if (hasil.status == '1') {
                                         Swal.fire(hasil.msg,
                                             "", "success").then((hasil1) => {
-                                            $("#addPemasukan").modal('hide');
+                                            $("#addPengeluaran").modal('hide');
                                             dataTable.ajax.reload();
                                         });
                                     } else {
                                         Swal.fire(hasil.msg,
                                             "", "error").then((hasil1) => {
-                                            // $("#addPemasukan").modal('hide');
+                                            // $("#addPengeluaran").modal('hide');
                                             // dataTable.ajax.reload();
                                         });
                                     }
@@ -275,10 +276,10 @@
                                 error: function(xhr) {
                                     Swal.fire({
                                         title: "Failed",
-                                        text: "Maaf, pemasukan tabungan gagal dibuat, silahkan dicoba kembali !",
+                                        text: "Maaf, pengeluaran tabungan gagal dibuat, silahkan dicoba kembali !",
                                         icon: "error"
                                     }).then((hasil1) => {
-                                        // $("#addPemasukan").modal('hide');
+                                        // $("#addPengeluaran").modal('hide');
                                         // dataTable.ajax.reload();
                                     });
                                 }
@@ -290,12 +291,12 @@
                 });
             });
 
-            $(document).on("click", ".del_pemasukan", function() {
+            $(document).on("click", ".del_pengeluaran", function() {
                 var id = $(this).data('id');
 
                 Swal.fire({
                     icon: "warning",
-                    title: "Anda yakin ingin hapus pemasukan ini ?",
+                    title: "Anda yakin ingin hapus pengeluaran ini ?",
                     showCancelButton: true,
                     confirmButtonText: "Simpan",
                     cancelButtonText: "Batal"
@@ -303,7 +304,7 @@
                     if (result.isConfirmed) {
                         $.ajax({
                             type: "DELETE",
-                            url: "{{ route('del_pemasukan_tabungan') }}",
+                            url: "{{ route('del_pengeluaran_tabungan') }}",
                             data: {
                                 _token: "{{ csrf_token() }}",
                                 id: id
@@ -311,7 +312,7 @@
                             cache: false,
                             dataType: "json",
                             beforeSend: function(result) {
-                                $(".del_pemasukan_" + id).html(
+                                $(".del_pengeluaran_" + id).html(
                                     "<i class='fa fa-spin fa-spinner'></i>");
                             },
                             success: function(result) {
@@ -326,8 +327,8 @@
                             error: function(result) {
                                 Swal.fire({
                                     icon: "error",
-                                    title: "Hapus Pemasukan Gagal !",
-                                    text: "Maaf, hapus pemasukan gagal, silahkan coba lagi !"
+                                    title: "Hapus Pengeluaran Gagal !",
+                                    text: "Maaf, hapus pengeluaran gagal, silahkan coba lagi !"
                                 });
                             }
                         });
@@ -340,7 +341,7 @@
 
                 Swal.fire({
                     icon: "warning",
-                    title: "Anda yakin ingin approve pemasukan tabungan ini ?",
+                    title: "Anda yakin ingin approve pengeluaran tabungan ini ?",
                     showCancelButton: true,
                     confirmButtonText: "Approve",
                     cancelButtonText: "Batal"
@@ -349,7 +350,7 @@
                     if (hasil.isConfirmed) {
                         $.ajax({
                             type: "PUT",
-                            url: "{{ route('approval_pemasukan_tabungan') }}",
+                            url: "{{ route('approval_pengeluaran_tabungan') }}",
                             data: {
                                 _token: "{{ csrf_token() }}",
                                 id: id
@@ -372,10 +373,34 @@
                             error: function(result) {
                                 Swal.fire({
                                     icon: "error",
-                                    title: "Approve Pemasukan Gagal !",
-                                    text: "Maaf, approve pemasukan gagal, silahkan coba lagi !"
+                                    title: "Approve Pengeluaran Gagal !",
+                                    text: "Maaf, approve pengeluaran gagal, silahkan coba lagi !"
                                 });
                             }
+                        });
+                    }
+                });
+            });
+
+            $(document).on('change', '.get_tabungan', function() {
+                var id_karyawan = $(this).val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('get_tabungan_pengeluaran') }}',
+                    data: {
+                        '_token': '{{ csrf_token() }}',
+                        'id_karyawan': id_karyawan
+                    },
+                    cache: false,
+                    success: function(result) {
+                        $('.nilai_tabungan_karyawan').html('Rp. ' + result);
+                    },
+                    error: function(result) {
+                        swal.fire({
+                            title: 'Error',
+                            text: 'Maaf, ada kesalahan teknis !',
+                            icon: 'error'
                         });
                     }
                 });

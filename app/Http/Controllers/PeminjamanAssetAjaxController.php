@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
+
 class PeminjamanAssetAjaxController extends Controller
 {
     public function get_peminjaman_asset(Request $request)
@@ -75,7 +76,7 @@ class PeminjamanAssetAjaxController extends Controller
             if ($list_data->sts == 0) {
                 $edit_btn = ' <button type="button" class="btn btn-sm btn-warning text-light edit_barang" data-id_peminjaman_asset="' . $list_data->id_peminjaman_asset . '"><i class="fa fa-edit"></i></button>';
                 $del_btn = '<button type="submit" class="btn btn-sm btn-danger" data-id_peminjaman_asset="' . $list_data->id_peminjaman_asset . '"><i class="fa fa-trash"></i></button>';
-                
+
                 $reject_btn = '<button type="button" class="btn btn-sm btn-danger reject_peminjaman" data-id_peminjaman_asset="' . $list_data->id_peminjaman_asset . '"><i class="fa fa-ban"></i></button>';
             }
 
@@ -89,12 +90,12 @@ class PeminjamanAssetAjaxController extends Controller
                 'buttons' => '
                 <form id="delete_form">
                     ' . $apprv_btn . '
-                    '.$view_btn.'
-                    '.$edit_btn.'
-                    '.$reject_btn.'
+                    ' . $view_btn . '
+                    ' . $edit_btn . '
+                    ' . $reject_btn . '
                     ' . csrf_field() . '
                     <input type="hidden" name="id_peminjaman_asset" value="' . $list_data->id_peminjaman_asset . '">
-                    '.$del_btn.'
+                    ' . $del_btn . '
                 </form>
                 '
             ];
@@ -283,7 +284,7 @@ class PeminjamanAssetAjaxController extends Controller
             $approve_peminjaman->save();
 
             $get_peminjaman_asset = PeminjamanAsset2::where('id_peminjaman_asset', '=', $id)->get();
-            foreach($get_peminjaman_asset as $list_asset){
+            foreach ($get_peminjaman_asset as $list_asset) {
                 MasterBarang::where('id_barang', '=', $list_asset->id_asset)->update([
                     'sts' => 1
                 ]);
@@ -307,7 +308,7 @@ class PeminjamanAssetAjaxController extends Controller
             $approve_peminjaman->save();
 
             $get_peminjaman_asset = PeminjamanAsset2::where('id_peminjaman_asset', '=', $id)->get();
-            foreach($get_peminjaman_asset as $list_asset){
+            foreach ($get_peminjaman_asset as $list_asset) {
                 MasterBarang::where('id_barang', '=', $list_asset->id_asset)->update([
                     'sts' => 1
                 ]);

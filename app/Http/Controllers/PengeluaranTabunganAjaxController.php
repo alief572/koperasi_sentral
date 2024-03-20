@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PemasukanTabungan;
+use App\Models\PengeluaranTabungan;
 use App\Models\MasterKaryawan;
 
 use Illuminate\Http\Request;
@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 
-class PemasukanTabunganAjaxController extends Controller
+class PengeluaranTabunganAjaxController extends Controller
 {
-    public function get_pemasukan_tabungan(Request $request)
+    public function get_pengeluaran_tabungan(Request $request)
     {
         $search_val = $request->input('search');
         // print_r($search_val);
@@ -25,7 +25,7 @@ class PemasukanTabunganAjaxController extends Controller
         $search = request()->input('search.value');
 
         if ($search_val !== "" && $search_val !== null) {
-            $data = PemasukanTabungan::where('tip', '=', 'pemasukan')
+            $data = PengeluaranTabungan::where('tip', '=', 'pengeluaran')
                 ->whereAny([
                     'nm_karyawan',
                     'tgl',
@@ -36,7 +36,7 @@ class PemasukanTabunganAjaxController extends Controller
                 ->skip($start)
                 ->take($length);
 
-            $all_data = PemasukanTabungan::where('tip', '=', 'pemasukan')
+            $all_data = PengeluaranTabungan::where('tip', '=', 'pengeluaran')
                 ->whereAny([
                     'nm_karyawan',
                     'tgl',
@@ -46,10 +46,10 @@ class PemasukanTabunganAjaxController extends Controller
                 ], 'LIKE', '%' . $search_val . '%')
                 ->limit(50);
         } else {
-            $data = PemasukanTabungan::where('tipe', '=', 'pemasukan')
+            $data = PengeluaranTabungan::where('tipe', '=', 'pengeluaran')
                 ->skip($start)
                 ->take($length);
-            $all_data =  PemasukanTabungan::limit(50);
+            $all_data =  PengeluaranTabungan::where('tipe', '=', 'pengeluaran')->limit(50);
         }
 
         $get_data = $data->get();
@@ -69,9 +69,9 @@ class PemasukanTabunganAjaxController extends Controller
                 $status = '<div class="badge badge-success">Rejected</div>';
             }
 
-            $edit = '<button type="button" class="btn btn-sm btn-success text-light edit_pemasukan_tabungan edit_pemasukan_tabungan_' . $list_data->id . '" data-id="' . $list_data->id . '"><i class="fa fa-pencil"></i></button>';
+            $edit = '<button type="button" class="btn btn-sm btn-success text-light edit_pengeluaran_tabungan edit_pengeluaran_tabungan_' . $list_data->id . '" data-id="' . $list_data->id . '"><i class="fa fa-pencil"></i></button>';
             $view = '<button type="button" class="btn btn-sm btn-info view view_' . $list_data->id . '" data-id="' . $list_data->id . '"><i class="fa fa-eye"></i></button>';
-            $delete = '<button type="button" class="btn btn-sm btn-danger del_pemasukan del_pemasukan_' . $list_data->id . '" data-id="' . $list_data->id . '"><i class="fa fa-trash"></i></button>';
+            $delete = '<button type="button" class="btn btn-sm btn-danger del_pengeluaran del_pengeluaran_' . $list_data->id . '" data-id="' . $list_data->id . '"><i class="fa fa-trash"></i></button>';
             $approval = '<button type="button" class="btn btn-sm bg-warning text-dark approval approval_' . $list_data->id . '" data-id="' . $list_data->id . '"><i class="fa fa-check"></i></button>';
             if ($list_data->status == '1') {
                 $edit = '';
@@ -101,19 +101,19 @@ class PemasukanTabunganAjaxController extends Controller
         ]);
     }
 
-    public function add_pemasukan_modal()
+    public function add_pengeluaran_modal()
     {
 
         // $get_karyawan = MasterKaryawan::all();
 
-        return view('dashboard.pemasukan_tabungan.add');
+        return view('dashboard.pengeluaran_tabungan.add');
     }
 
-    public function get_karyawan_pemasukan(Request $request)
+    public function get_karyawan_pengeluaran(Request $request)
     {
         // $getData = MasterKaryawan::where('nm_karyawan', 'LIKE', '%' . ($request->input('searchTerm')) . '%')->limit(50)->get();
 
-        $getData = DB::select('SELECT a.* FROM ms_karyawan a WHERE (SELECT count(aa.id) FROM ms_tabungan aa WHERE aa.id_karyawan = a.id_karyawan AND aa.status = "0" AND aa.tipe = "pemasukan") < 1 AND a.nm_karyawan LIKE "%' . $request->input('searchTerm') . '%" ORDER BY a.nm_karyawan ASC LIMIT 50');
+        $getData = DB::select('SELECT a.* FROM ms_karyawan a WHERE (SELECT count(aa.id) FROM ms_tabungan aa WHERE aa.id_karyawan = a.id_karyawan AND aa.status = "0" AND aa.tipe = "pengeluaran") < 1 AND a.nm_karyawan LIKE "%' . $request->input('searchTerm') . '%" ORDER BY a.nm_karyawan ASC LIMIT 50');
 
         $hasil = [];
 
@@ -127,41 +127,44 @@ class PemasukanTabunganAjaxController extends Controller
         echo json_encode($hasil);
     }
 
-    public function save_pemasukan_tabungan(Request $request)
+    public function save_pengeluaran_tabungan(Request $request)
     {
         DB::beginTransaction();
 
         try {
 
-            $id_pemasukan = PemasukanTabungan::where('id', 'LIKE', '%PMT-' . date('m-y') . '%')->max('id');
-            $kodeBarang = $id_pemasukan;
+            $id_pengeluaran = PengeluaranTabungan::where('id', 'LIKE', '%PGT-' . date('m-y') . '%')->max('id');
+            $kodeBarang = $id_pengeluaran;
             $urutan = (int) substr($kodeBarang, 10, 5);
             $urutan++;
             $tahun = date('m-y');
-            $huruf = "PMT-";
+            $huruf = "PGT-";
             $kodecollect = $huruf . $tahun . sprintf("%06s", $urutan);
 
             $get_karyawan = MasterKaryawan::find($request->input('karyawan'));
 
-            $pemasukan_tabungan = new PemasukanTabungan();
+            $pengeluaran_tabungan = new PengeluaranTabungan();
 
-            $pemasukan_tabungan->id = $kodecollect;
-            $pemasukan_tabungan->id_karyawan = $request->input('karyawan');
-            $pemasukan_tabungan->nm_karyawan = $get_karyawan->nm_karyawan;
-            $pemasukan_tabungan->tipe = 'pemasukan';
-            $pemasukan_tabungan->tgl = $request->input('tgl_pemasukan');
-            $pemasukan_tabungan->nilai = str_replace(',', '', $request->input('nilai_pemasukan'));
-            $pemasukan_tabungan->keterangan = $request->input('keterangan');
-            $pemasukan_tabungan->status = '0';
+            $pengeluaran_tabungan->id = $kodecollect;
+            $pengeluaran_tabungan->id_karyawan = $request->input('karyawan');
+            $pengeluaran_tabungan->nm_karyawan = $get_karyawan->nm_karyawan;
+            $pengeluaran_tabungan->tipe = 'pengeluaran';
+            $pengeluaran_tabungan->tgl = $request->input('tgl_pengeluaran');
+            $pengeluaran_tabungan->nilai = str_replace(',', '', $request->input('nilai_pengeluaran'));
+            $pengeluaran_tabungan->keterangan = $request->input('keterangan');
+            $pengeluaran_tabungan->status = '0';
 
-            $pemasukan_tabungan->save();
+            $pengeluaran_tabungan->save();
 
             $valid = 1;
-            $msg = 'Selamat, pemasukan tabungan berhasil dibuat !';
+            $msg = 'Selamat, pengeluaran tabungan berhasil dibuat !';
             DB::commit();
         } catch (\Exception $e) {
+            print_r($e->getMessage());
+            exit;
+
             $valid = 0;
-            $msg = 'Maaf, pemasukan tabungan gagal dibuat, silahkan coba kembali !';
+            $msg = 'Maaf, pengeluaran tabungan gagal dibuat, silahkan coba kembali !';
 
             DB::rollback();
         }
@@ -172,24 +175,24 @@ class PemasukanTabunganAjaxController extends Controller
         ]);
     }
 
-    public function del_pemasukan_tabungan(Request $request)
+    public function del_pengeluaran_tabungan(Request $request)
     {
         DB::beginTransaction();
 
         try {
-            PemasukanTabungan::destroy($request->input('id'));
+            PengeluaranTabungan::destroy($request->input('id'));
 
             DB::commit();
 
             $return_color = 'success';
             $title_return = 'Berhasil';
-            $msg = 'Selamat, Pemasukan tabungan berhasil dihapus !';
+            $msg = 'Selamat, Pengeluaran tabungan berhasil dihapus !';
         } catch (\Throwable $th) {
             DB::rollback();
 
             $return_color = 'error';
             $title_return = 'Gagal';
-            $msg = 'Selamat, Pemasukan tabungan gagal dihapus !';
+            $msg = 'Selamat, Pengeluaran tabungan gagal dihapus !';
         }
 
         echo json_encode([
@@ -199,79 +202,79 @@ class PemasukanTabunganAjaxController extends Controller
         ]);
     }
 
-    public function view_pemasukan_tabungan(Request $request)
+    public function view_pengeluaran_tabungan(Request $request)
     {
-        $data_pemasukan = PemasukanTabungan::find($request->input('id'));
+        $data_pengeluaran = PengeluaranTabungan::find($request->input('id'));
 
-        return view('dashboard.pemasukan_tabungan.view', [
-            'pemasukan' => $data_pemasukan
+        return view('dashboard.pengeluaran_tabungan.view', [
+            'pengeluaran' => $data_pengeluaran
         ]);
     }
 
-    public function edit_pemasukan_tabungan_modal(Request $request)
+    public function edit_pengeluaran_tabungan_modal(Request $request)
     {
-        $data_pemasukan = PemasukanTabungan::find($request->input('id'));
+        $data_pengeluaran = PengeluaranTabungan::find($request->input('id'));
         $data_karyawan = DB::select('SELECT a.id_karyawan, a.nm_karyawan FROM ms_karyawan a ORDER BY a.nm_karyawan ASC');
 
-        return view('dashboard.pemasukan_tabungan.add', [
-            'get_pemasukan' => $data_pemasukan,
+        return view('dashboard.pengeluaran_tabungan.add', [
+            'get_pengeluaran' => $data_pengeluaran,
             'get_karyawan' => $data_karyawan
         ]);
     }
 
-    public function edit_pemasukan_tabungan(Request $request)
+    public function edit_pengeluaran_tabungan(Request $request)
     {
         DB::beginTransaction();
 
         try {
             $get_karyawan = MasterKaryawan::find($request->input('karyawan'));
-            $pemasukan_tabungan = PemasukanTabungan::find($request->input('id_pemasukan'));
+            $pengeluaran_tabungan = PengeluaranTabungan::find($request->input('id_pengeluaran'));
 
-            $pemasukan_tabungan->id_karyawan = $request->input('karyawan');
-            $pemasukan_tabungan->nm_karyawan = $get_karyawan->nm_karyawan;
-            $pemasukan_tabungan->tipe = 'pemasukan';
-            $pemasukan_tabungan->tgl = $request->input('tgl_pemasukan');
-            $pemasukan_tabungan->nilai = str_replace(',', '', $request->input('nilai_pemasukan'));
-            $pemasukan_tabungan->keterangan = $request->input('keterangan');
-            $pemasukan_tabungan->status = '0';
+            $pengeluaran_tabungan->id_karyawan = $request->input('karyawan');
+            $pengeluaran_tabungan->nm_karyawan = $get_karyawan->nm_karyawan;
+            $pengeluaran_tabungan->tipe = 'pengeluaran';
+            $pengeluaran_tabungan->tgl = $request->input('tgl_pengeluaran');
+            $pengeluaran_tabungan->nilai = str_replace(',', '', $request->input('nilai_pengeluaran'));
+            $pengeluaran_tabungan->keterangan = $request->input('keterangan');
+            $pengeluaran_tabungan->status = '0';
 
-            $pemasukan_tabungan->save();
+            $pengeluaran_tabungan->save();
             DB::commit();
 
             return response()->json([
                 'status' => 1,
-                'msg' => 'Selamat, perubahan data pemasukan berhasil disimpan !'
+                'msg' => 'Selamat, perubahan data pengeluaran berhasil disimpan !'
             ]);
         } catch (\Exception $e) {
             DB::rollback();
 
             return response()->json([
                 'status' => 0,
-                'msg' => 'Maaf, perubahan data pemasukan tabungan gagal disimpan !'
+                'msg' => 'Maaf, perubahan data pengeluaran tabungan gagal disimpan !'
             ]);
         }
     }
 
-    public function approval_pemasukan_tabungan(Request $request)
+    public function approval_pengeluaran_tabungan(Request $request)
     {
         DB::beginTransaction();
 
         try {
-            $pemasukan_tabungan = PemasukanTabungan::find($request->input('id'));
-            $pemasukan_tabungan->status = '1';
+            $pengeluaran_tabungan = PengeluaranTabungan::find($request->input('id'));
+            $pengeluaran_tabungan->status = '1';
 
-            $pemasukan_tabungan->save();
+            $pengeluaran_tabungan->save();
             DB::commit();
 
             $return_color = 'success';
             $title_return = 'Berhasil';
-            $msg = 'Selamat, Pemasukan tabungan berhasil approve !';
+            $msg = 'Selamat, Pengeluaran tabungan berhasil di approve !';
         } catch (\Throwable $th) {
             DB::rollback();
 
             $return_color = 'error';
             $title_return = 'Gagal';
-            $msg = 'Selamat, Pemasukan tabungan gagal approve !';
+            $msg = 'Selamat, Pengeluaran tabungan gagal di approve !';
         }
 
         return response()->json([
@@ -279,5 +282,23 @@ class PemasukanTabunganAjaxController extends Controller
             'title_return' => $title_return,
             'msg' => $msg
         ]);
+    }
+
+    public function get_tabungan_pengeluaran(Request $request){
+        $id_karyawan = $request->input('id_karyawan');
+
+        $get_tabungan = DB::select('SELECT IF(SUM(a.nilai) IS NOT NULL, SUM(a.nilai), 0) as nilai_pemasukan, 0 AS nilai_pengeluaran FROM ms_tabungan a WHERE a.id_karyawan = "'.$id_karyawan.'" AND a.tipe = "pemasukan" AND a.status = "1" UNION ALL SELECT 0 AS nilai_pemasukan, IF(SUM(b.nilai) IS NOT NULL, SUM(b.nilai), 0) as nilai_pengeluaran FROM ms_tabungan b WHERE b.id_karyawan = "'.$id_karyawan.'" AND b.tipe = "pengeluaran" AND b.status = "1"');
+
+        // print_r($get_tabungan);
+        // exit;
+
+        $hasil = 0;
+        foreach($get_tabungan as $tabungan) :
+            $hasil += ($tabungan->nilai_pemasukan - $tabungan->nilai_pengeluaran);
+        endforeach;
+
+        $hasil = number_format($hasil, 2);
+
+        echo $hasil;
     }
 }

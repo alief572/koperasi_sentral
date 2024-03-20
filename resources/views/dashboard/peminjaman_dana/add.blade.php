@@ -49,7 +49,8 @@
     <div class="col-6">
         <div class="form-group">
             <label>Nilai Peminjaman</label>
-            <input type="number" name="nilai_peminjaman" id="" class="form-control form-control-sm text-right"
+            <input type="text" name="nilai_peminjaman" id=""
+                class="form-control form-control-sm text-right numeric"
                 value="{{ isset($data_peminjaman) ? $data_peminjaman->nilai_peminjaman : null }}" required>
         </div>
     </div>
@@ -176,7 +177,9 @@
         }
     });
 
-    // $('.autoNum').autoNumeric();
+    $(document).ready(function() {
+        $('.numeric').autoNumeric();
+    });
 
     // $(document).ready(function() {
     $(document).on('change', '.tipe_peminjaman', function() {
@@ -287,7 +290,7 @@
                             } else {
                                 Swal.fire(hasil.msg,
                                     "", "error").then((hasil1) => {
-                                    $("#addPeminjamanDana").modal('hide');
+                                    // $("#addPeminjamanDana").modal('hide');
                                     dataTable.ajax.reload();
                                 });
                             }

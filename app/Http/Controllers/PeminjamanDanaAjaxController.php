@@ -321,13 +321,13 @@ class PeminjamanDanaAjaxController extends Controller
 
         DB::beginTransaction();
         try {
-            $insert_peminjaman = PeminjamanDana::create([
+            PeminjamanDana::create([
                 'id' => $kode_pmd,
                 'id_karyawan' => $request->input('nm_karyawan'),
                 'nm_karyawan' => $karyawan_nm,
                 'tgl_peminjaman' => $request->input('tgl_peminjaman'),
                 'tenor' => $request->input('tenor_pinjaman'),
-                'nilai_peminjaman' => $request->input('nilai_peminjaman'),
+                'nilai_peminjaman' => str_replace(',', '', $request->input('nilai_peminjaman')),
                 'sts' => 'draft',
                 'keterangan' => $request->input('keterangan'),
                 'tipe_pinjaman' => $request->input('tipe_pinjaman')
@@ -335,7 +335,7 @@ class PeminjamanDanaAjaxController extends Controller
 
 
             if ($request->input('tenor_pinjaman') == '2') {
-                $barang_peminjaman_dana = PeminjamanDanaBarangModel::where('id_peminjaman', '=', auth()->user()->id)->update([
+                PeminjamanDanaBarangModel::where('id_peminjaman', '=', auth()->user()->id)->update([
                     'id_peminjaman' => $kode_pmd
                 ]);
             }

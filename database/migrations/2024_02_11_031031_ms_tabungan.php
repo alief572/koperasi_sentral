@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nm_karyawan');
             $table->string('tipe');
             $table->date('tgl');
-            $table->date('nilai');
+            $table->decimal('nilai', $precision = 20, $scale = 2);
             $table->text('keterangan');
             $table->string('status');
             $table->timestamps();

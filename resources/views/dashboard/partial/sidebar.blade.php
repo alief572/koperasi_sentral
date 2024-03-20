@@ -69,37 +69,49 @@
                         </li>
                     </ul>
                 </li>
+
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-list"></i>
                         <p>
-                            Peminjaman Asset
+                            Peminjaman
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="/peminjaman_asset" class="nav-link">
-                                <i class="fa fa-list nav-icon"></i>
-                                <p>Peminjaman Asset</p>
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-list"></i>
+                                <p>
+                                    Asset
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/peminjaman_asset" class="nav-link">
+                                        <i class="fa fa-list nav-icon"></i>
+                                        <p>Peminjaman Asset</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-list"></i>
-                        <p>
-                            Peminjaman Dana
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="/peminjaman_dana" class="nav-link">
-                                <i class="fa fa-list nav-icon"></i>
-                                <p>Peminjaman Dana</p>
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-list"></i>
+                                <p>
+                                    Dana
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/peminjaman_dana" class="nav-link">
+                                        <i class="fa fa-list nav-icon"></i>
+                                        <p>Peminjaman Dana</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </li>

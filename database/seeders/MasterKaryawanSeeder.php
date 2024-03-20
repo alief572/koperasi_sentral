@@ -12,6 +12,6 @@ class MasterKaryawanSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\MasterKaryawan::factory(15000)->create();
+        \App\Models\MasterKaryawan::factory(500)->create();
     }
 }

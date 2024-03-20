@@ -1,17 +1,23 @@
 <table class="table table-striped">
     <tr>
-        <th>ID Barang</th>
+        <th>ID Pemasukan</th>
         <th>:</th>
-        <td>{{ $barang->id_barang }}</td>
+        <td>{{ $pemasukan->id }}</td>
+        <th>Nama Karyawan</th>
+        <th>:</th>
+        <td>{{ $pemasukan->nm_karyawan }}</td>
     </tr>
     <tr>
-        <th>Nama Barang</th>
+        <th>Tgl Pemasukan</th>
         <th>:</th>
-        <td>{{ $barang->nm_barang }}</td>
+        <td>{{ date('d F Y', strtotime($pemasukan->tgl)) }}</td>
+        <th>Nilai Pemasukan</th>
+        <th>:</th>
+        <td class="text-right">{{ number_format($pemasukan->nilai, 2) }}</td>
     </tr>
     <tr>
-        <th>Status</th>
+        <th>Keterangan</th>
         <th>:</th>
-        <td>{!! ($barang->sts == 1) ? '<div class="badge badge-success">Tersedia</div>' : '<div class="badge badge-danger">Tidak Tersedia</div>' !!}</td>
+        <td colspan="4">{{ $pemasukan->keterangan }}</td>
     </tr>
 </table>

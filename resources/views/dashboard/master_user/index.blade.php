@@ -49,7 +49,8 @@
                     <div class="modal-body addUserMB">
                         <div class="form-group">
                             <label for="">Kategori User</label>
-                            <select name="kategori_user" id="" class="form-control form-control-sm chosen-select" required>
+                            <select name="kategori_user" id="" class="form-control form-control-sm chosen-select"
+                                required>
                                 <option value="">- Kategori User -</option>
                                 <option value="1">Admin</option>
                                 <option value="2">Admin Peminjaman Asset</option>
@@ -111,7 +112,8 @@
                     <div class="modal-body editUserMB">
                         <div class="form-group">
                             <label for="">Kategori User</label>
-                            <select name="kategori_user" id="" class="form-control form-control-sm chosen_select_edit kategori_user" required>
+                            <select name="kategori_user" id=""
+                                class="form-control form-control-sm chosen_select_edit kategori_user" required>
                                 <option value="">- Kategori User -</option>
                                 <option value="1">Admin</option>
                                 <option value="2">Admin Peminjaman Asset</option>
@@ -130,7 +132,8 @@
                         </div>
                         <div class="form-group">
                             <label for="">Email</label>
-                            <input type="email" name="email" id="" class="form-control form-control-sm email">
+                            <input type="email" name="email" id=""
+                                class="form-control form-control-sm email">
                             @error('email')
                                 <div class="alert alert-danger">{{ $message }}</div>
                             @enderror

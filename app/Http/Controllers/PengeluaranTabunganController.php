@@ -2,23 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PemasukanTabungan;
+use App\Models\PengeluaranTabungan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 
-use helper;
-
-class PemasukanTabunganController extends Controller
+class PengeluaranTabunganController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-
-        return view('dashboard.pemasukan_tabungan.index', [
-            'title' => 'Pemasukan Tabungan',
+        return view('dashboard.pengeluaran_tabungan.index', [
+            'title' => 'Pengeluaran Tabungan',
             'logged_user' => Auth::user(),
             'active_controller' => get_class($this),
             'site_url' => url()->current()
@@ -44,7 +41,7 @@ class PemasukanTabunganController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(PemasukanTabungan $pemasukanTabungan)
+    public function show(PengeluaranTabungan $pengeluaranTabungan)
     {
         //
     }
@@ -52,7 +49,7 @@ class PemasukanTabunganController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(PemasukanTabungan $pemasukanTabungan)
+    public function edit(PengeluaranTabungan $pengeluaranTabungan)
     {
         //
     }
@@ -60,7 +57,7 @@ class PemasukanTabunganController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PemasukanTabungan $pemasukanTabungan)
+    public function update(Request $request, PengeluaranTabungan $pengeluaranTabungan)
     {
         //
     }
@@ -68,7 +65,7 @@ class PemasukanTabunganController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PemasukanTabungan $pemasukanTabungan)
+    public function destroy(PengeluaranTabungan $pengeluaranTabungan)
     {
         //
     }

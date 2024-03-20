@@ -91,6 +91,9 @@
     <script src="./dist/js/notify.js"></script>
 
     <!-- PAGE PLUGINS -->
+
+    {{-- Auto Numeric JQuery --}}
+    <script src="./js/autoNumeric.js"></script>
     <!-- jQuery Mapael -->
     <script src="./plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
     <script src="./plugins/raphael/raphael.min.js"></script>
@@ -108,6 +111,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script src="https://kit.fontawesome.com/05834520ae.js" crossorigin="anonymous"></script>
+
 
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/notify.js/3.0.0/notify.min.js"
         integrity="sha512-PQMRyb2voatXvVWN0wiKLbGB4U5VSg8xSvdjel7FwiCVquWwNzHs5qmksyZoY+6xPptfMo8m/T/EGVe/8ZxDOw=="
