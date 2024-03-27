@@ -16,11 +16,14 @@ use App\Http\Controllers\PeminjamanDanaController;
 use App\Http\Controllers\PeminjamanDanaAjaxController;
 use App\Http\Controllers\PengeluaranTabunganController;
 use App\Http\Controllers\PengeluaranTabunganAjaxController;
+use App\Http\Controllers\TabunganController;
+use App\Http\Controllers\TabunganAjaxController;
 use App\Models\MasterKaryawan;
 use App\Models\MasterBarang;
 use App\Models\MasterKategoriBarang;
 use App\Models\PemasukanTabungan;
 use App\Models\PengeluaranTabungan;
+use App\Models\Tabungan;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -71,6 +74,9 @@ Route::resource('/pemasukan_tabungan', PemasukanTabunganController::class)->midd
 
 // Pengeluaran Tabungan
 Route::resource('/pengeluaran_tabungan', PengeluaranTabunganController::class)->middleware('auth');
+
+// Pengeluaran Tabungan
+Route::resource('/tabungan_karyawan', TabunganController::class)->middleware('auth');
 
 // Ajax Get Data
 Route::get('/get_user', function () {
@@ -332,3 +338,7 @@ Route::get('/edit_pengeluaran_tabungan_modal', [PengeluaranTabunganAjaxControlle
 Route::put('/edit_pengeluaran_tabungan', [PengeluaranTabunganAjaxController::class, 'edit_pengeluaran_tabungan'])->middleware('auth')->name('edit_pengeluaran_tabungan');
 Route::put('/approval_pengeluaran_tabungan', [PengeluaranTabunganAjaxController::class, 'approval_pengeluaran_tabungan'])->middleware('auth')->name('approval_pengeluaran_tabungan');
 Route::post('/get_tabungan_pengeluaran', [PengeluaranTabunganAjaxController::class, 'get_tabungan_pengeluaran'])->middleware('auth')->name('get_tabungan_pengeluaran');
+
+// Ajax Tabungan Karyawan
+Route::get('/view_tabungan_karyawan', [TabunganAjaxController::class, 'view_tabungan_karyawan'])->middleware('auth')->name('view_tabungan_karyawan');
+Route::post('/search_tabungan_karyawan', [TabunganAjaxController::class, 'search_tabungan_karyawan'])->middleware('auth')->name('search_tabungan_karyawan');

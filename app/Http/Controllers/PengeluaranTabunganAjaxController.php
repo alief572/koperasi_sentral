@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PengeluaranTabungan;
 use App\Models\MasterKaryawan;
+use App\Models\TabunganNilai;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,7 @@ class PengeluaranTabunganAjaxController extends Controller
         $search = request()->input('search.value');
 
         if ($search_val !== "" && $search_val !== null) {
-            $data = PengeluaranTabungan::where('tip', '=', 'pengeluaran')
+            $data = PengeluaranTabungan::where('tipe', '=', 'pengeluaran')
                 ->whereAny([
                     'nm_karyawan',
                     'tgl',
@@ -36,7 +37,7 @@ class PengeluaranTabunganAjaxController extends Controller
                 ->skip($start)
                 ->take($length);
 
-            $all_data = PengeluaranTabungan::where('tip', '=', 'pengeluaran')
+            $all_data = PengeluaranTabungan::where('tipe', '=', 'pengeluaran')
                 ->whereAny([
                     'nm_karyawan',
                     'tgl',
@@ -72,7 +73,7 @@ class PengeluaranTabunganAjaxController extends Controller
             $edit = '<button type="button" class="btn btn-sm btn-success text-light edit_pengeluaran_tabungan edit_pengeluaran_tabungan_' . $list_data->id . '" data-id="' . $list_data->id . '"><i class="fa fa-pencil"></i></button>';
             $view = '<button type="button" class="btn btn-sm btn-info view view_' . $list_data->id . '" data-id="' . $list_data->id . '"><i class="fa fa-eye"></i></button>';
             $delete = '<button type="button" class="btn btn-sm btn-danger del_pengeluaran del_pengeluaran_' . $list_data->id . '" data-id="' . $list_data->id . '"><i class="fa fa-trash"></i></button>';
-            $approval = '<button type="button" class="btn btn-sm bg-warning text-dark approval approval_' . $list_data->id . '" data-id="' . $list_data->id . '"><i class="fa fa-check"></i></button>';
+            $approval = '<button type="button" class="btn btn-sm bg-warning text-dark approval approval_' . $list_data->id . '" data-id="' . $list_data->id . '" data-id_karyawan="'.$list_data->id_karyawan.'"><i class="fa fa-check"></i></button>';
             if ($list_data->status == '1') {
                 $edit = '';
                 $delete = '';
@@ -264,6 +265,27 @@ class PengeluaranTabunganAjaxController extends Controller
             $pengeluaran_tabungan->status = '1';
 
             $pengeluaran_tabungan->save();
+
+            $get_tabungan = PengeluaranTabungan::find($request->input('id'));
+
+            $get_nilai_tabungan = TabunganNilai::where('id_karyawan', '=', $request->input('id_karyawan'))->get();
+            // print_r($get_tabungan);
+            // exit;
+            // if(!empty($get_nilai_tabungan)){
+            //     $tabungan_nilai = new TabunganNilai();
+
+            //     $tabungan_nilai->id_karyawan = $get_tabungan->id_karyawan;
+            //     $tabungan_nilai->nm_karyawan = $get_tabungan->nm_karyawan;
+            //     $tabungan_nilai->nilai_tabungan = $get_tabungan->nilai;
+
+            //     $tabungan_nilai->save();
+            // }else{
+            //     $tabungan_nilai = TabunganNilai::where('id_karyawan', '=', $get_tabungan->id_karyawan);
+
+            //     $tabungan_nilai->nilai_tabungan = ($get_nilai_tabungan->nilai_tabungan - $get_tabungan->nilai);
+
+            //     $tabungan_nilai->save();
+            // }
             DB::commit();
 
             $return_color = 'success';

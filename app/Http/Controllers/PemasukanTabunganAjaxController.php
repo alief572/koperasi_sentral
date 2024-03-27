@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PemasukanTabungan;
 use App\Models\MasterKaryawan;
+use App\Models\TabunganNilai;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,7 @@ class PemasukanTabunganAjaxController extends Controller
         $search = request()->input('search.value');
 
         if ($search_val !== "" && $search_val !== null) {
-            $data = PemasukanTabungan::where('tip', '=', 'pemasukan')
+            $data = PemasukanTabungan::where('tipe', '=', 'pemasukan')
                 ->whereAny([
                     'nm_karyawan',
                     'tgl',
@@ -36,7 +37,7 @@ class PemasukanTabunganAjaxController extends Controller
                 ->skip($start)
                 ->take($length);
 
-            $all_data = PemasukanTabungan::where('tip', '=', 'pemasukan')
+            $all_data = PemasukanTabungan::where('tipe', '=', 'pemasukan')
                 ->whereAny([
                     'nm_karyawan',
                     'tgl',
@@ -261,6 +262,26 @@ class PemasukanTabunganAjaxController extends Controller
             $pemasukan_tabungan->status = '1';
 
             $pemasukan_tabungan->save();
+
+            $get_tabungan = PemasukanTabungan::find($request->input('id'));
+            
+            $get_nilai_tabungan = TabunganNilai::where('id_karyawan', '=', $get_tabungan->id_karyawan);
+            if(!empty($get_nilai_tabungan)){
+                $tabungan_nilai = new TabunganNilai();
+
+                $tabungan_nilai->id_karyawan = $get_tabungan->id_karyawan;
+                $tabungan_nilai->nm_karyawan = $get_tabungan->nm_karyawan;
+                $tabungan_nilai->nilai_tabungan = $get_tabungan->nilai;
+
+                $tabungan_nilai->save();
+            }else{
+                $tabungan_nilai = TabunganNilai::where('id_karyawan', '=', $get_tabungan->id_karyawan);
+
+                $tabungan_nilai->nilai_tabungan = ($get_nilai_tabungan->nilai_tabungan + $get_tabungan->nilai);
+
+                $tabungan_nilai->save();
+            }
+            
             DB::commit();
 
             $return_color = 'success';

@@ -338,6 +338,7 @@
 
             $(document).on("click", ".approval", function() {
                 var id = $(this).data("id");
+                var id_karyawan = $(this).data("id_karyawan");
 
                 Swal.fire({
                     icon: "warning",
@@ -353,7 +354,8 @@
                             url: "{{ route('approval_pengeluaran_tabungan') }}",
                             data: {
                                 _token: "{{ csrf_token() }}",
-                                id: id
+                                id: id,
+                                id_karyawan: id_karyawan,
                             },
                             cache: false,
                             dataType: "json",
