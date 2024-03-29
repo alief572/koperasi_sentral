@@ -71,7 +71,7 @@ class MenusAjaxController extends Controller
                     <button type="button" class="btn btn-sm btn-danger del_menus del_menus_' . $list_data->id . '" data-id="' . $list_data->id . '">
                         <i class="fa fa-trash"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-warning text-light">
+                    <button type="button" class="btn btn-sm btn-warning text-light edit_menus" data-id="' . $list_data->id . '">
                         <i class="fa fa-edit"></i>
                     </button>
                 '
@@ -109,38 +109,46 @@ class MenusAjaxController extends Controller
         }
 
         DB::beginTransaction();
-        try {
-            $permission_type = ['View', 'Add', 'Delete', 'Manage'];
-            foreach ($permission_type as $per_type) {
-                Permission::create([
-                    'nm_permission' => str_replace(' ', '_', $post['nama_menu']) . $per_type,
-                    'ket' => $per_type,
-                    'nm_menu' => $post['nama_menu']
-                ]);
-            }
 
-            Menus::create([
-                'title' => $post['nama_menu'],
-                'link' => $post['link_menu'],
-                'icon' => $post['icon_menu'],
-                'parent_id' => $parent_menu,
-                'status' => $post['status'],
-                'order' => $post['order_menu']
-            ]);
-
-            $valid = 1;
-            $msg = 'Selamat, Data telah berhasil di input !';
-            DB::commit();
-        } catch (QueryException $e) {
-            DB::rollback();
+        $check_menu = Menus::where('title', '=', $post['nama_menu'])->get();
+        if(count($check_menu) > 0){
             $valid = 0;
-            $msg = 'Maaf, Data gagal diinput !';
-            // print_r($e->getMessage());
+            $msg = 'Maaf, nama menu '.$post['nama_menu'].' sudah ada !';
+        }else{
+            try {
+                $permission_type = ['View', 'Add', 'Delete', 'Manage'];
+                foreach ($permission_type as $per_type) {
+                    Permission::create([
+                        'nm_permission' => str_replace(' ', '_', $post['nama_menu']) . '.' . $per_type,
+                        'ket' => $per_type,
+                        'nm_menu' => $post['nama_menu']
+                    ]);
+                }
+    
+                Menus::create([
+                    'title' => $post['nama_menu'],
+                    'link' => $post['link_menu'],
+                    'icon' => $post['icon_menu'],
+                    'parent_id' => $parent_menu,
+                    'status' => $post['status'],
+                    'order' => $post['order_menu']
+                ]);
+    
+                $valid = 1;
+                $msg = 'Selamat, Data telah berhasil di input !';
+                DB::commit();
+            } catch (QueryException $e) {
+                DB::rollback();
+                $valid = 0;
+                $msg = 'Maaf, Data gagal diinput !';
+                // print_r($e->getMessage());
+            }
         }
 
         echo json_encode([
             'status' => $valid,
-            'msg' => $msg
+            'msg' => $msg,
+            'nama_menu' => $post['nama_menu']
         ]);
     }
 
@@ -152,6 +160,9 @@ class MenusAjaxController extends Controller
 
         DB::beginTransaction();
         try {
+            $get_menu = Menus::find($id);
+
+            Permission::where('nm_menu', '=', $get_menu->title);
             Menus::destroy($id);
 
             $valid = 1;
@@ -162,6 +173,81 @@ class MenusAjaxController extends Controller
             $valid = 0;
             $msg = 'Maaf, Data gagal di hapus !';
             // print_r($e->getMessage());
+        }
+
+        echo json_encode([
+            'status' => $valid,
+            'msg' => $msg
+        ]);
+    }
+
+    public function add_auto_permission(Request $request)
+    {
+        $post = $request->input();
+
+        $nama_menu = $post['nama_menu'];
+
+        $get_permission = Permission::where('nm_menu', '=', $nama_menu)
+            ->where('ket', '=', 'View')->get();
+
+        DB::beginTransaction();
+        try {
+            Menus::where('title', '=', $nama_menu)->update([
+                'permission_id' => $get_permission[0]->id
+            ]);
+
+            $valid = 1;
+            DB::commit();
+        } catch (QueryException $e) {
+            $valid = 0;
+
+            DB::rollback();
+        }
+
+        echo json_encode([
+            'status' => $valid
+        ]);
+    }
+
+    public function edit_modal_menus(Request $request){
+        $post = $request->input();
+        $id = $post['id'];
+
+        $get_menus = Menus::find($id);
+        $get_list_permission = Permission::where('ket', '=', 'View')->get();
+
+        return view('dashboard.menus.add', [
+            'data_menus' => $get_menus,
+            'list_menu' => Menus::all(),
+            'list_permission' => $get_list_permission
+        ]);
+    }
+
+    public function edit_menus(Request $request){
+        $post = $request->input();
+
+        DB::beginTransaction();
+            
+        try {
+            Menus::find($post['id_menus'])->update([
+                'title' => $post['nama_menu'],
+                'link' => $post['link_menu'],
+                'icon' => $post['icon_menu'],
+                'parent_id' => $post['parent_menu'],
+                'permission_id' => $post['permission_id'],
+                'status' => $post['status'],
+                'order' => $post['order_menu']
+            ]);
+
+            DB::commit();
+
+            $valid = 1;
+            $msg = 'Selamat, process edit menu berhasil !';
+        } catch (QueryException $e) {
+            DB::rollback();
+
+            $valid = 0;
+            $msg = 'Maaf, process edit menu gagal !';
         }
 
         echo json_encode([

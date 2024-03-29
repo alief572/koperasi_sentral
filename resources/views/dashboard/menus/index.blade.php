@@ -5,7 +5,7 @@
         {{ $title }}
         <button type="button" class="btn btn-sm btn-success ml-2 add_menus">
             <i class="fa fa-plus"></i>
-            Tambah Menu
+            {{ $list_menus }}
         </button>
     </h4>
     <table class="table table-striped data-table">
@@ -131,8 +131,10 @@
                     cache: false,
                     beforeSend: function(result) {
                         $('.add_menus').html('<i class="fa fa-spin fa-spinner"></i>');
+
                     },
                     success: function(result) {
+                        $('.modal_title_add').html('Tambah Menu');
                         $('#addMenusMB').html(result);
                         $('#addMenus').modal('show');
 
@@ -160,9 +162,9 @@
 
                 Swal.fire({
                     icon: "warning",
-                    title: "Anda yakin ingin menghapus mennu ini ?",
+                    title: "Anda yakin ingin menghapus menu ini ?",
                     showCancelButton: true,
-                    confirmButtonText: "Simpan",
+                    confirmButtonText: "Hapus",
                     cancelButtonText: "Batal"
                 }).then((result) => {
                     /* Read more about isConfirmed, isDenied below */
@@ -181,7 +183,7 @@
                                     '<i class="fa fa-spin fa-spinner"></i>');
                             },
                             success: function(result) {
-                                if(result.status == '1'){
+                                if (result.status == '1') {
                                     Swal.fire({
                                         title: 'Success !',
                                         text: result.msg,
@@ -189,7 +191,7 @@
                                     }).then((hasil_result) => {
                                         dataTable.ajax.reload();
                                     });
-                                }else{
+                                } else {
                                     Swal.fire({
                                         title: 'Gagal !',
                                         text: result.msg,
@@ -213,6 +215,25 @@
 
                     } else if (result.isDenied) {
                         Swal.fire("Data batal di simpan !", "", "info");
+                    }
+                });
+            });
+
+            $(document).on('click', '.edit_menus', function() {
+                var id = $(this).data('id');
+
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('edit_modal_menus') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: id
+                    },
+                    cache: false,
+                    success: function(result) {
+                        $('.modal_title_add').html('Edit Menu');
+                        $('#addMenusMB').html(result);
+                        $('#addMenus').modal('show');
                     }
                 });
             });

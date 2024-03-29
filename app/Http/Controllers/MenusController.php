@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 
+use App\helper\list_menus;
+
 class MenusController extends Controller
 {
     /**
@@ -18,7 +20,8 @@ class MenusController extends Controller
             'title' => 'Menus',
             'logged_user' => Auth::user(),
             'active_controller' => get_class($this),
-            'site_url' => url()->current()
+            'site_url' => url()->current(),
+            'list_menus' => helperController::list_menus()
         ]);
     }
 

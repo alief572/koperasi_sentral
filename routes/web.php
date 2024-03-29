@@ -352,5 +352,8 @@ Route::post('/search_tabungan_karyawan', [TabunganAjaxController::class, 'search
 // Ajax Menus
 Route::get('/get_menus', [MenusAjaxController::class, 'get_menus'])->middleware('auth')->name('get_menus');
 Route::get('/add_menus', [MenusAjaxController::class, 'add_menus'])->middleware('auth')->name('add_menus');
+Route::get('/edit_modal_menus', [MenusAjaxController::class, 'edit_modal_menus'])->middleware('auth')->name('edit_modal_menus');
 Route::delete('/del_menus', [MenusAjaxController::class, 'del_menus'])->middleware('auth')->name('del_menus');
 Route::post('/save_menus', [MenusAjaxController::class, 'save_menus'])->middleware('auth')->name('save_menus');
+Route::put('/add_auto_permission', [MenusAjaxController::class, 'add_auto_permission'])->middleware('auth')->name('add_auto_permission');
+Route::put('/edit_menus', [MenusAjaxController::class, 'edit_menus'])->middleware('auth')->name('edit_menus');
