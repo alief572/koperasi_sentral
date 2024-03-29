@@ -8,6 +8,7 @@ use App\Http\Controllers\MasterKaryawanController;
 use App\Http\Controllers\MasterKategoriBarangController;
 use App\Http\Controllers\MasterKategoriBarangAjaxController;
 use App\Http\Controllers\MasterUserController;
+use App\Http\Controllers\MenusAjaxController;
 use App\Http\Controllers\PemasukanTabunganController;
 use App\Http\Controllers\PemasukanTabunganAjaxController;
 use App\Http\Controllers\PeminjamanAssetAjaxController;
@@ -18,12 +19,14 @@ use App\Http\Controllers\PengeluaranTabunganController;
 use App\Http\Controllers\PengeluaranTabunganAjaxController;
 use App\Http\Controllers\TabunganController;
 use App\Http\Controllers\TabunganAjaxController;
+use App\Http\Controllers\MenusController;
 use App\Models\MasterKaryawan;
 use App\Models\MasterBarang;
 use App\Models\MasterKategoriBarang;
 use App\Models\PemasukanTabungan;
 use App\Models\PengeluaranTabungan;
 use App\Models\Tabungan;
+use App\Models\Menus;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -77,6 +80,9 @@ Route::resource('/pengeluaran_tabungan', PengeluaranTabunganController::class)->
 
 // Pengeluaran Tabungan
 Route::resource('/tabungan_karyawan', TabunganController::class)->middleware('auth');
+
+// Menus
+Route:: resource('/menus', MenusController::class)->middleware('auth');
 
 // Ajax Get Data
 Route::get('/get_user', function () {
@@ -342,3 +348,9 @@ Route::post('/get_tabungan_pengeluaran', [PengeluaranTabunganAjaxController::cla
 // Ajax Tabungan Karyawan
 Route::get('/view_tabungan_karyawan', [TabunganAjaxController::class, 'view_tabungan_karyawan'])->middleware('auth')->name('view_tabungan_karyawan');
 Route::post('/search_tabungan_karyawan', [TabunganAjaxController::class, 'search_tabungan_karyawan'])->middleware('auth')->name('search_tabungan_karyawan');
+
+// Ajax Menus
+Route::get('/get_menus', [MenusAjaxController::class, 'get_menus'])->middleware('auth')->name('get_menus');
+Route::get('/add_menus', [MenusAjaxController::class, 'add_menus'])->middleware('auth')->name('add_menus');
+Route::delete('/del_menus', [MenusAjaxController::class, 'del_menus'])->middleware('auth')->name('del_menus');
+Route::post('/save_menus', [MenusAjaxController::class, 'save_menus'])->middleware('auth')->name('save_menus');

@@ -117,7 +117,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-list"></i>
+                        <i class="nav-icon fa fa-money"></i>
                         <p>
                             Tabungan
                             <i class="right fas fa-angle-left"></i>
@@ -140,6 +140,23 @@
                             <a href="/pengeluaran_tabungan" class="nav-link">
                                 <i class="fa fa-money nav-icon"></i>
                                 <p>Pengeluaran Tabungan</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Setting
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/menus" class="nav-link">
+                                <i class="fa fa-list nav-icon"></i>
+                                <p>Menus</p>
                             </a>
                         </li>
                     </ul>
