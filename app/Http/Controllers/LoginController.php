@@ -11,7 +11,7 @@ class LoginController extends Controller
         return view('index');
     }
 
-    public function login(Request $req){
+    public function login(Request $req, $no_permission = null){
         $credentials = $req->validate([
             'username' => ['required'],
             'password' => ['required'],
@@ -21,9 +21,9 @@ class LoginController extends Controller
             $req->session()->regenerate();
  
             return redirect()->intended('/dashboard');
+        }else{
+            return back()->with('login_error','Username or Password is incorrect !');
         }
- 
-        return back()->with('login_error','Username or Password is incorrect !');
     }
 
     public function logout(Request $request){

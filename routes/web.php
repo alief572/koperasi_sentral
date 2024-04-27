@@ -20,6 +20,8 @@ use App\Http\Controllers\PengeluaranTabunganAjaxController;
 use App\Http\Controllers\TabunganController;
 use App\Http\Controllers\TabunganAjaxController;
 use App\Http\Controllers\MenusController;
+use App\Http\Controllers\UserPermissionAjaxController;
+use App\Http\Controllers\UserPermissionController;
 use App\Models\MasterKaryawan;
 use App\Models\MasterBarang;
 use App\Models\MasterKategoriBarang;
@@ -82,7 +84,10 @@ Route::resource('/pengeluaran_tabungan', PengeluaranTabunganController::class)->
 Route::resource('/tabungan_karyawan', TabunganController::class)->middleware('auth');
 
 // Menus
-Route:: resource('/menus', MenusController::class)->middleware('auth');
+Route::resource('/menus', MenusController::class)->middleware('auth');
+
+// User Permission
+Route::resource('/user_permission', UserPermissionController::class)->middleware('auth');
 
 // Ajax Get Data
 Route::get('/get_user', function () {
@@ -357,3 +362,8 @@ Route::delete('/del_menus', [MenusAjaxController::class, 'del_menus'])->middlewa
 Route::post('/save_menus', [MenusAjaxController::class, 'save_menus'])->middleware('auth')->name('save_menus');
 Route::put('/add_auto_permission', [MenusAjaxController::class, 'add_auto_permission'])->middleware('auth')->name('add_auto_permission');
 Route::put('/edit_menus', [MenusAjaxController::class, 'edit_menus'])->middleware('auth')->name('edit_menus');
+
+// Ajax User Permission
+
+Route::get('/get_user_permission', [UserPermissionAjaxController::class, 'get_user_permission'])->middleware('auth')->name('get_user_permission');
+

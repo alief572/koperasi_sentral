@@ -21,7 +21,7 @@ class MenusController extends Controller
             'logged_user' => Auth::user(),
             'active_controller' => get_class($this),
             'site_url' => url()->current(),
-            'list_menus' => helperController::list_menus()
+            'list_menus' => helperController::list_menus(Auth::user(), 'Menus')
         ]);
     }
 

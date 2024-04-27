@@ -20,7 +20,7 @@ class helperController extends Controller
         return $notif;
     }
 
-    public static function list_menus(){
+    public static function list_menus($user_id = null, $permission){
         return 'return list menus !';
     }
 }

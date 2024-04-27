@@ -34,6 +34,19 @@
                         </p>
                     </a>
                 </li>
+               
+                {{-- @foreach ($get_menu as $menu)
+                    <li class="nav-item">
+                        <a href="{{ $menu->link }}" class="nav-link">
+                            <i class="nav-icon {{ $menu->icon }}"></i>
+                            <p>
+                                {{ $menu->title }}
+                                <i class="right fas fa-angle"></i>
+                            </p>
+                        </a>
+                        
+                    </li>
+                @endforeach --}}
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-file"></i>
@@ -43,12 +56,6 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="/master_user" class="nav-link">
-                                <i class="far fa-user nav-icon"></i>
-                                <p>Menu User</p>
-                            </a>
-                        </li>
                         <li class="nav-item">
                             <a href="/master_karyawan" class="nav-link">
                                 <i class="far fa-user nav-icon"></i>
@@ -153,12 +160,24 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="/menus" class="nav-link">
-                                <i class="fa fa-list nav-icon"></i>
-                                <p>Menus</p>
-                            </a>
-                        </li>
+                      <li class="nav-item">
+                          <a href="/master_user" class="nav-link">
+                              <i class="far fa-user nav-icon"></i>
+                              <p>Menu User</p>
+                          </a>
+                      </li>
+                      <li class="nav-item">
+                          <a href="/user_permission" class="nav-link">
+                              <i class="far fa-user nav-icon"></i>
+                              <p>User Permission</p>
+                          </a>
+                      </li>
+                      <li class="nav-item">
+                          <a href="/menus" class="nav-link">
+                              <i class="fa fa-list nav-icon"></i>
+                              <p>Menus</p>
+                          </a>
+                      </li>
                     </ul>
                 </li>
                 {{-- <li class="nav-item">
