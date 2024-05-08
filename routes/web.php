@@ -366,4 +366,5 @@ Route::put('/edit_menus', [MenusAjaxController::class, 'edit_menus'])->middlewar
 // Ajax User Permission
 
 Route::get('/get_user_permission', [UserPermissionAjaxController::class, 'get_user_permission'])->middleware('auth')->name('get_user_permission');
+Route::post('/edit_user_permission', [UserPermissionAjaxController::class, 'edit_user_permission'])->middleware('auth')->name('edit_user_permission');
 
