@@ -54,7 +54,7 @@ Route::get('/logout', [LoginController::class, 'logout']);
 Route::post('/login', [LoginController::class, 'login']);
 
 // Dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 
 // Master User
 Route::resource('/master_user', MasterUserController::class)->middleware('auth');
@@ -97,8 +97,18 @@ Route::get('/get_user', function () {
 
 Route::get('/get_data_user/{id}', function ($id) {
     $data = User::find($id);
+    $get_karyawan = MasterKaryawan::all();
 
-    return response()->json($data);
+    $list_karyawan = '<option value="">- Pilih Karyawan -</option>';
+    foreach($get_karyawan as $karyawan) :
+        $selected = '';
+        if($data->id_karyawan == $karyawan->id_karyawan):
+            $selected = 'selected';
+        endif;
+        $list_karyawan .= '<option value="'.$karyawan->id_karyawan.'" '.$selected.'>'.$karyawan->nm_karyawan.'</option>';
+    endforeach;
+
+    return response()->json(['data_user' => $data, 'list_karyawan' => $list_karyawan]);
 })->name('get_data_user');
 
 Route::get('/get_karyawan', function (Request $request) {

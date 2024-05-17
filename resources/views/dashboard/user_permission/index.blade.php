@@ -3,10 +3,6 @@
 @section('content')
     <h4>
         {{ $title }}
-        <button type="button" class="btn btn-sm btn-success ml-2 add_user" data-toggle="modal" data-target="#addUser">
-            <i class="fa fa-plus"></i>
-            Tambah User
-        </button>
     </h4>
     <table class="table table-striped data-table">
         <thead>

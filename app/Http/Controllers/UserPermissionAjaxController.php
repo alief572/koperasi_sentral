@@ -27,58 +27,48 @@ class UserPermissionAjaxController extends Controller
             UserPermission::where('id_user', '=', $id_user)->delete();
 
             $hasil = [];
-            if(!empty($check_view) || !empty($check_add) || !empty($check_delete) || !empty($check_manage)){
-                if(!empty($check_view)){
-                    foreach ($check_view as $ch_view) :
-                        $hasil[] = [
-                            'id_user' => $id_user,
-                            'id_permission' => $ch_view
-                        ];
-                    endforeach;
-                }
-
-                if(!empty($check_add)){
-                    foreach ($check_add as $ch_add) :
-                        $get_main_perm = DB::table('permission')->select('nm_menu')->where('id', '=', $ch_add)->get();
-                        $get_add_perm = DB::table('permission')->select('id')->where('ket', '=', 'Add')->andWhere('nm_menu', '=', $get_main_perm->nm_menu)->get();
-                        $hasil[] = [
-                            'id_user' => $id_user,
-                            'id_permission' => $get_add_perm->id
-                        ];
-                    endforeach;
-                }
-    
-                if(!empty($check_manage)){
-                    foreach ($check_manage as $ch_manage) :
-                        $get_main_perm = DB::table('permission')->select('nm_menu')->where('id', '=', $ch_manage)->get();
-                        $get_manage_perm = DB::table('permission')->select('id')->where('ket', '=', 'Manage')->andWhere('nm_menu', '=', $get_main_perm->nm_menu)->get();
-                        $hasil[] = [
-                            'id_user' => $id_user,
-                            'id_permission' => $get_manage_perm->id
-                        ];
-                    endforeach;
-                }
-    
-                if(!empty($check_delete)){
-                    foreach ($check_delete as $ch_delete) :
-                        $get_main_perm = DB::table('permission')->select('nm_menu')->where('id', '=', $ch_delete)->get();
-                        $get_del_perm = DB::table('permission')->select('id')->where('ket', '=', 'Delete')->andWhere('nm_menu', '=', $get_main_perm->nm_menu)->get();
-                        $hasil[] = [
-                            'id_user' => $id_user,
-                            'id_permission' => $get_del_perm->id
-                        ];
-                    endforeach;
-                }
-    
-                UserPermission::insert($hasil);
-    
-                DB::commit();
-                $valid = 1;
-            }else{
-                $valid = 0;
+            if(!empty($check_view)){
+                foreach ($check_view as $ch_view) :
+                    $hasil[] = [
+                        'id_user' => $id_user,
+                        'id_permission' => $ch_view
+                    ];
+                endforeach;
             }
+
+            if(!empty($check_add)){
+                foreach ($check_add as $ch_add) :
+                    $hasil[] = [
+                        'id_user' => $id_user,
+                        'id_permission' => $ch_add
+                    ];
+                endforeach;
+            }
+
+            if(!empty($check_manage)){
+                foreach ($check_manage as $ch_manage) :
+                    $hasil[] = [
+                        'id_user' => $id_user,
+                        'id_permission' => $ch_manage
+                    ];
+                endforeach;
+            }
+
+            if(!empty($check_delete)){
+                foreach ($check_delete as $ch_delete) :
+                    $hasil[] = [
+                        'id_user' => $id_user,
+                        'id_permission' => $ch_delete
+                    ];
+                endforeach;
+            }
+
+            UserPermission::insert($hasil);
+
+            DB::commit();
+            $valid = 1;
         } catch (Exception $e) {
-            dd($e->getMessage()); // Display the error message
+            $valid = 0;
         }
 
         echo json_encode(['status' => $valid]);

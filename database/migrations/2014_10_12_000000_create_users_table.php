@@ -19,6 +19,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->integer('sts');
+            $table->string('id_karyawan');
             $table->rememberToken();
             $table->timestamps();
         });

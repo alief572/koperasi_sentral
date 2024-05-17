@@ -1,3 +1,9 @@
+@php
+    $get_sidebar_menus = list_menus();
+
+    $get_user_permission = get_user_permission();
+    $array = ['banana', 'orange', 'apple', 'grape'];
+@endphp
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
@@ -34,7 +40,7 @@
                         </p>
                     </a>
                 </li>
-               
+
                 {{-- @foreach ($get_menu as $menu)
                     <li class="nav-item">
                         <a href="{{ $menu->link }}" class="nav-link">
@@ -47,7 +53,46 @@
                         
                     </li>
                 @endforeach --}}
-                <li class="nav-item">
+                @foreach ($get_sidebar_menus as $item)
+                    @if ($item->link == '#' && $item->parent_id == '0')
+                        @if (in_array($item->permission_id, $get_user_permission))
+                            <li class="nav-item">
+                                <a href="/{{ $item->link }}" class="nav-link">
+                                    <i class="nav-icon fas fa-file"></i>
+                                    <p>
+                                        {{ $item->title }}
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    @foreach ($get_sidebar_menus as $menus1)
+                                        @if ($menus1->parent_id == $item->id && in_array($menus1->permission_id, $get_user_permission))
+                                            <li class="nav-item">
+                                                <a href="/{{ $menus1->link }}" class="nav-link">
+                                                    <i class="far {{ $menus1->icon }}"></i>
+                                                    <p>{{ $menus1->title }}</p>
+                                                </a>
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            </li>
+                        @endif
+                    @else
+                        @if ($item->link !== '#' && $item->parent_id == '0')
+                            <li class="nav-item">
+                                <a href="/{{ $item->link }}" class="nav-link">
+                                    <i class="nav-icon {{ $item->icon }}"></i>
+                                    <p>
+                                        {{ $item->title }}
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                            </li>
+                        @endif
+                    @endif
+                @endforeach
+                {{-- <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-file"></i>
                         <p>
@@ -76,7 +121,6 @@
                         </li>
                     </ul>
                 </li>
-
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-list"></i>
@@ -160,26 +204,26 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                      <li class="nav-item">
-                          <a href="/master_user" class="nav-link">
-                              <i class="far fa-user nav-icon"></i>
-                              <p>Menu User</p>
-                          </a>
-                      </li>
-                      <li class="nav-item">
-                          <a href="/user_permission" class="nav-link">
-                              <i class="far fa-user nav-icon"></i>
-                              <p>User Permission</p>
-                          </a>
-                      </li>
-                      <li class="nav-item">
-                          <a href="/menus" class="nav-link">
-                              <i class="fa fa-list nav-icon"></i>
-                              <p>Menus</p>
-                          </a>
-                      </li>
+                        <li class="nav-item">
+                            <a href="/master_user" class="nav-link">
+                                <i class="far fa-user nav-icon"></i>
+                                <p>Menu User</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/user_permission" class="nav-link">
+                                <i class="far fa-user nav-icon"></i>
+                                <p>User Permission</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/menus" class="nav-link">
+                                <i class="fa fa-list nav-icon"></i>
+                                <p>Menus</p>
+                            </a>
+                        </li>
                     </ul>
-                </li>
+                </li> --}}
                 {{-- <li class="nav-item">
             <a href="pages/widgets.html" class="nav-link">
               <i class="nav-icon fas fa-th"></i>

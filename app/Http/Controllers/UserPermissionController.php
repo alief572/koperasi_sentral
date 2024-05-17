@@ -18,8 +18,9 @@ class UserPermissionController extends Controller
      */
     public function index()
     {
+        
         return view('dashboard.user_permission.index', [
-            'title' => 'Master User',
+            'title' => 'User Permission',
             'logged_user' => Auth::user(),
             'list_users' => User::all()
         ]);
@@ -58,10 +59,10 @@ class UserPermissionController extends Controller
             'title' => 'Edit User Permission',
             'logged_user' => Auth::user(),
             'data_user' => User::find($id),
-            'data_user_permission' => UserPermission::where('id', '=', $id),
-            'list_menu' => DB::table('menus as a')
-            ->select('a.*, b.id as permit_id')
-            ->leftJoin('permission as b', 'b.');
+            'list_menu' => Menus::all(),
+            'list_permission' => DB::table('permission')->get(),
+            'user_permission' => DB::table('user_permission')->leftJoin('users', 'users.username' , '=', 'user_permission.id_user')->select('user_permission.id_permission')->where('users.id', '=', $id)->get()->toArray(),
+            'count_user_permission' => count(UserPermission::select('id_permission')->where('id_user', '=', Auth::user()->username)->get()->toArray())
         ]);
     }
 

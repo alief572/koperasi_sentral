@@ -25,21 +25,27 @@ class MenusAjaxController extends Controller
         $search = request()->input('search.value');
 
         if ($search_val !== "" && $search_val !== null) {
-            $data = Menus::whereAny([
-                'id',
-                'title',
-                'parent_id',
-                'permission_id'
-            ], 'LIKE', '%' . $search_val . '%')
-                ->skip($start)
-                ->take($length);
+            // $data = Menus::whereAny([
+            //     'id',
+            //     'title',
+            //     'parent_id',
+            //     'permission_id'
+            // ], 'LIKE', '%' . $search_val . '%')
+            //     ->skip($start)
+            //     ->take($length);
+            
+            $data = Menus::where('id', 'LIKE', '%'.$search_val.'%')
+            ->orWhere('title', 'LIKE', '%'.$search_val.'%')
+            ->orWhere('parent_id', 'LIKE', '%'.$search_val.'%')
+            ->orWhere('permission_id', 'LIKE', '%'.$search_val.'%')
+            ->skip($start)
+            ->take($length);
 
-            $all_data = Menus::whereAny([
-                'id',
-                'title',
-                'parent_id',
-                'permission_id'
-            ], 'LIKE', '%' . $search_val . '%');
+            $all_data = Menus::where('id', 'LIKE', '%'.$search_val.'%')
+            ->orWhere('title', 'LIKE', '%'.$search_val.'%')
+            ->orWhere('parent_id', 'LIKE', '%'.$search_val.'%')
+            ->orWhere('permission_id', 'LIKE', '%'.$search_val.'%')
+            ->limit(50);
         } else {
             $data = Menus::skip($start)->take($length);
             $all_data =  Menus::all();

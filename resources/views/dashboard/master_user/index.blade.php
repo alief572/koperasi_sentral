@@ -111,18 +111,6 @@
                     <input type="hidden" name="id" class="id_user" value="">
                     <div class="modal-body editUserMB">
                         <div class="form-group">
-                            <label for="">Kategori User</label>
-                            <select name="kategori_user" id=""
-                                class="form-control form-control-sm chosen_select_edit kategori_user" required>
-                                <option value="">- Kategori User -</option>
-                                <option value="1">Admin</option>
-                                <option value="2">Admin Peminjaman Asset</option>
-                            </select>
-                            @error('kategori_user')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="form-group">
                             <label for="">Nama User</label>
                             <input type="text" name="nm_user" id="" class="form-control form-control-sm nm_user"
                                 required>
@@ -137,6 +125,12 @@
                             @error('email')
                                 <div class="alert alert-danger">{{ $message }}</div>
                             @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="">Karyawan</label>
+                            <select name="id_karyawan" id="" class="form-control form-control-sm select_karyawan chosen_select_edit">
+                               
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="">Username</label>
@@ -229,12 +223,12 @@
                     cache: false,
                     dataType: "JSON",
                     success: function(result) {
-                        console.log(result);
-                        $(".id_user").val(result.id);
-                        $(".nm_user").val(result.name);
-                        $(".email").val(result.email);
-                        $(".username").val(result.username);
-                        $(".kategori_user").val(result.kategori_user).trigger("change");
+                        console.log(result.list_karyawan);
+                        $(".id_user").val(result.data_user.id);
+                        $(".nm_user").val(result.data_user.name);
+                        $(".email").val(result.data_user.email);
+                        $(".username").val(result.data_user.username);
+                        $(".select_karyawan").html(result.list_karyawan);
                     }
                 });
             });
